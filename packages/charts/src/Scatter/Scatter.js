@@ -95,7 +95,7 @@ Scatter.propTypes /* remove-proptypes */ = {
   /**
    * The data to be plotted. Either an array of objects, or nested arrays of objects.
    */
-  data: PropTypes.oneOf(
+  data: PropTypes.oneOf([
     PropTypes.arrayOf(
       PropTypes.shape({
         x: PropTypes.number,
@@ -112,7 +112,7 @@ Scatter.propTypes /* remove-proptypes */ = {
         }).isRequired,
       ),
     ),
-  ).isRequired,
+  ]).isRequired,
   /**
    * The fill color of the markers.
    */
