@@ -1,11 +1,11 @@
 import * as React from 'react';
-import Alert from '@material-ui/lab/Alert';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Popper from '@material-ui/core/Popper';
-import Paper from '@material-ui/core/Paper';
-import { createTheme, Theme } from '@material-ui/core/styles';
-import { createStyles, makeStyles } from '@material-ui/styles';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Popper from '@mui/material/Popper';
+import Paper from '@mui/material/Paper';
+import { createTheme, Theme } from '@mui/material/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   GridCellValue,
   GridCellParams,
@@ -998,6 +998,21 @@ export function SwitchVirtualization() {
     </div>
   );
 }
+
+export function DisableVirtualization() {
+  const { data } = useDemoData({
+    dataSet: 'Commodity',
+    rowLength: 200,
+    maxColumns: 4,
+  });
+
+  return (
+    <div style={{ width: '100%', height: '100%' }}>
+      <DataGridPro rows={data.rows} columns={data.columns} pagination disableVirtualization />
+    </div>
+  );
+}
+
 export function DeferRendering() {
   const [deferRows, setRows] = React.useState<any>([]);
   const [deferColumns] = React.useState([{ field: 'id', headerName: 'Id', width: 100 }]);

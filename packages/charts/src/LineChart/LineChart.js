@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { useForkRef } from '@material-ui/core/utils';
+import { useForkRef } from '@mui/material/utils';
 import ChartContext from '../ChartContext';
 import useChartDimensions from '../hooks/useChartDimensions';
 import useStackedArrays from '../hooks/useStackedArrays';
@@ -95,8 +95,6 @@ const LineChart = React.forwardRef(function LineChart(props, ref) {
       y: -1,
     });
   };
-
-  console.log(lines);
 
   return (
     <ChartContext.Provider

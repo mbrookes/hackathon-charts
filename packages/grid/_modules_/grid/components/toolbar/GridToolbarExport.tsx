@@ -1,13 +1,14 @@
 import * as React from 'react';
-// @ts-expect-error fixed in Material-UI v5, types definitions were added.
-import { unstable_useId as useId } from '@material-ui/core/utils';
-import MenuList from '@material-ui/core/MenuList';
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
+import PropTypes from 'prop-types';
+import { unstable_useId as useId } from '@mui/material/utils';
+import MenuList from '@mui/material/MenuList';
+import Button, { ButtonProps } from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import { isHideMenuKey, isTabKey } from '../../utils/keyboardUtils';
 import { useGridApiContext } from '../../hooks/root/useGridApiContext';
 import { GridMenu } from '../menu/GridMenu';
 import { GridExportCsvOptions } from '../../models/gridExport';
+import { useGridRootProps } from '../../hooks/utils/useGridRootProps';
 
 interface GridExportFormatCsv {
   format: 'csv';
@@ -24,14 +25,14 @@ export interface GridToolbarExportProps extends ButtonProps {
   csvOptions?: GridExportCsvOptions;
 }
 
-export const GridToolbarExport = React.forwardRef<HTMLButtonElement, GridToolbarExportProps>(
+const GridToolbarExport = React.forwardRef<HTMLButtonElement, GridToolbarExportProps>(
   function GridToolbarExport(props, ref) {
     const { csvOptions, onClick, ...other } = props;
     const apiRef = useGridApiContext();
+    const rootProps = useGridRootProps();
     const buttonId = useId();
     const menuId = useId();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const ExportIcon = apiRef!.current.components!.ExportIcon!;
 
     const exportOptions: Array<GridExportOption> = [];
     exportOptions.push({
@@ -68,7 +69,7 @@ export const GridToolbarExport = React.forwardRef<HTMLButtonElement, GridToolbar
           ref={ref}
           color="primary"
           size="small"
-          startIcon={<ExportIcon />}
+          startIcon={<rootProps.components.ExportIcon />}
           aria-expanded={anchorEl ? 'true' : undefined}
           aria-label={apiRef.current.getLocaleText('toolbarExportLabel')}
           aria-haspopup="menu"
@@ -103,3 +104,19 @@ export const GridToolbarExport = React.forwardRef<HTMLButtonElement, GridToolbar
     );
   },
 );
+
+GridToolbarExport.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // | To update them edit the TypeScript types and run "yarn proptypes"  |
+  // ----------------------------------------------------------------------
+  csvOptions: PropTypes.shape({
+    allColumns: PropTypes.bool,
+    delimiter: PropTypes.string,
+    fields: PropTypes.arrayOf(PropTypes.string),
+    fileName: PropTypes.string,
+    utf8WithBom: PropTypes.bool,
+  }),
+} as any;
+
+export { GridToolbarExport };
