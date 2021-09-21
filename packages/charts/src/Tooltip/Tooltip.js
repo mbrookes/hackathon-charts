@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import Popper from '@material-ui/core/Popper';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import Popper from '@mui/material/Popper';
+import Paper from '@mui/material/Paper';
+import NoSsr from '@mui/core/NoSsr';
+import Typography from '@mui/material/Typography';
 import ChartContext from '../ChartContext';
 import { findObjects, isInRange } from '../utils';
 import useTicks from '../hooks/useTicks';
@@ -45,39 +46,41 @@ function Tooltip(props) {
 
   return (
     <React.Fragment>
-      <Popper
-        open={strokeRef.current !== null}
-        placement="right-start"
-        anchorEl={strokeRef.current}
-        style={{ padding: '16px', pointerEvents: 'none' }}
-      >
-        <Paper style={{ padding: '8px' }}>
-          <Typography gutterBottom>{label && label.value}</Typography>
-          {highlightedData &&
-            highlightedData
-              .sort((a, b) => d3.descending(a[yKey], b[yKey]))
-              .map((d) => (
-                <Typography variant="body2">
-                  {d.label}
-                  {d.label ? ':' : null} {d[yKey]}
-                </Typography>
-              ))}
-        </Paper>
-      </Popper>
-      <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
-        {offset !== undefined && (
-          <g transform={`translate(${offset}, 0)`}>
-            <line
-              ref={strokeRef}
-              y2={-boundedHeight}
-              stroke={stroke}
-              strokeWidth={strokeWidth}
-              strokeDasharray={strokeDasharray}
-              shapeRendering="crispEdges"
-            />
-          </g>
-        )}
-      </g>
+      <NoSsr>
+        <Popper
+          open={strokeRef.current !== null}
+          placement="right-start"
+          anchorEl={strokeRef.current}
+          style={{ padding: '16px', pointerEvents: 'none' }}
+        >
+          <Paper style={{ padding: '8px' }}>
+            <Typography gutterBottom>{label && label.value}</Typography>
+            {highlightedData &&
+              highlightedData
+                .sort((a, b) => d3.descending(a[yKey], b[yKey]))
+                .map((d) => (
+                  <Typography variant="body2">
+                    {d.label}
+                    {d.label ? ':' : null} {d[yKey]}
+                  </Typography>
+                ))}
+          </Paper>
+        </Popper>
+        <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
+          {offset !== undefined && (
+            <g transform={`translate(${offset}, 0)`}>
+              <line
+                ref={strokeRef}
+                y2={-boundedHeight}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+                strokeDasharray={strokeDasharray}
+                shapeRendering="crispEdges"
+              />
+            </g>
+          )}
+        </g>
+      </NoSsr>
     </React.Fragment>
   );
 }
