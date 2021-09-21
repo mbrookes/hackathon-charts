@@ -59,7 +59,7 @@ function Tooltip(props) {
               highlightedData
                 .sort((a, b) => d3.descending(a[yKey], b[yKey]))
                 .map((d) => (
-                  <Typography variant="body2">
+                  <Typography variant="body2" key={d.label}>
                     {d.label}
                     {d.label ? ':' : null} {d[yKey]}
                   </Typography>
