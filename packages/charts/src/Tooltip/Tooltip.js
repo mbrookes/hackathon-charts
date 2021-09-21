@@ -21,7 +21,7 @@ function Tooltip(props) {
   } = useContext(ChartContext);
 
   const { stroke = 'rgba(200, 200, 200, 0.8)', strokeDasharray = '0', strokeWidth = 1 } = props;
-  const strokeRef = React.useRef({});
+  const strokeRef = React.useRef(null);
 
   // Flatten the data
   // eslint-disable-next-line prefer-spread
