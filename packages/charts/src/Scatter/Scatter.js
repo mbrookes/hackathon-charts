@@ -99,24 +99,7 @@ Scatter.propTypes /* remove-proptypes */ = {
   /**
    * The data to be plotted. Either an array of objects, or nested arrays of objects.
    */
-  data: PropTypes.oneOf([
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        x: PropTypes.number,
-        y: PropTypes.number,
-        z: PropTypes.number,
-      }).isRequired,
-    ),
-    PropTypes.arrayOf(
-      PropTypes.arrayOf(
-        PropTypes.shape({
-          x: PropTypes.number,
-          y: PropTypes.number,
-          z: PropTypes.number,
-        }).isRequired,
-      ),
-    ),
-  ]).isRequired,
+  data: PropTypes.array,
   /**
    * The fill color of the markers.
    */
@@ -129,7 +112,17 @@ Scatter.propTypes /* remove-proptypes */ = {
   /**
    * The shape of the markers.
    */
-  markerShape: PropTypes.oneOf(['circle', 'cross', 'diamond', 'square', 'star', 'triangle', 'wye']),
+  markerShape: PropTypes.oneOf([
+    'auto',
+    'circle',
+    'cross',
+    'diamond',
+    'square',
+    'star',
+    'triangle',
+    'wye',
+    'none',
+  ]),
   /**
    * The maximum size of the markers.
    */
