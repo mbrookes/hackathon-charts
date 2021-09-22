@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes, { any } from 'prop-types';
 import * as d3 from 'd3';
 import { useForkRef } from '@mui/material/utils';
 import ChartContext from '../ChartContext';
