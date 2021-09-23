@@ -29,7 +29,7 @@ This is the set of charts available at this moment:
 </LineChart>
 ```
 
-Note that each part of the charts, the grid, the axises, the lines, the legend etc is defined as a component render as a children in the chart.
+Note that each part of the chart (the grid, the axes, the lines, the legend etc.) is defined as a component, rendered as a children in the chart.
 You can add/remove any part that you would not like to use, and you would not have that component in your bundle.
 
 ### Bar Charts
