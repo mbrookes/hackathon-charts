@@ -1,4 +1,4 @@
-import { useForkRef } from '@mui/material/utils';
+import { unstable_useForkRef as useForkRef, unstable_useId as useId } from '@mui/utils';
 import * as d3 from 'd3';
 import * as React from 'react';
 import ChartContext from '../ChartContext';
@@ -32,14 +32,6 @@ type MarkerShape =
   | 'wye'
   | 'none';
 
-interface Marker {
-  label: string;
-  series: number;
-  markerColor: string;
-  markerSize?: number;
-  markerShape?: MarkerShape;
-}
-
 export interface LineChartProps<X = unknown, Y = unknown> {
   /**
    * The area keys to use when stacking the data.
@@ -65,6 +57,10 @@ export interface LineChartProps<X = unknown, Y = unknown> {
    * If true, the markers will be highlighted when the mouse is over them.
    */
   highlightMarkers?: boolean;
+  /**
+   * Id of the root chart element.
+   */
+  id?: string;
   /**
    * Invert the line and fill colors of the point markers.
    */
@@ -148,6 +144,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     data: dataProp,
     fill = 'none',
     highlightMarkers = false,
+    id: idProp,
     invertMarkers = false,
     label,
     labelColor = '#777',
@@ -187,7 +184,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   };
   const [chartRef, dimensions] = useChartDimensions(chartSettings);
   const handleRef = useForkRef(chartRef, ref);
-  const [lines, setLines] = React.useState([]);
+  const [seriesMeta, setSeriesMeta] = React.useState([]);
   const {
     width,
     height,
@@ -237,21 +234,21 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     });
   };
 
-  const idRef = React.useRef('chart' + (Math.random() * 100000).toFixed(0));
+  const id = useId(idProp);
 
   return (
     <ChartContext.Provider
       value={{
         areaKeys,
-        chartId: idRef.current,
+        chartId: id,
         data,
         dimensions,
         highlightMarkers,
         invertMarkers,
-        lines,
+        seriesMeta,
         markerShape,
         markerSize,
-        setLines,
+        setSeriesMeta,
         stacked,
         mousePosition,
         smoothed,
@@ -268,15 +265,16 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
       <svg
         viewBox={`0 0 ${width} ${height}`}
         ref={handleRef}
+        id={id}
         {...other}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
       >
         <defs>
-          <clipPath id={`${idRef.current}-clipPath`}>
+          <clipPath id={`${id}-clipPath`}>
             <rect
-              width={width - marginLeft - marginRight}
-              height={height - marginTop - marginBottom}
+              width={Math.max(width - marginLeft - marginRight, 0)}
+              height={Math.max(height - marginTop - marginBottom, 0)}
             />
           </clipPath>
         </defs>
