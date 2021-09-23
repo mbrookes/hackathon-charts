@@ -4,7 +4,7 @@ title: Charts
 
 # Charts
 
-<p class="description">The charts library you always wanted. Available in MIT and Commercial versions.</p>
+<p class="description">The chart library you always wanted. Available in MIT and Commercial versions.</p>
 
 The MUI charts are build using SVG elements and a lightweight dependency on d3.
 Build your own charts using the decoupled, reusable React components avialable in the package.
