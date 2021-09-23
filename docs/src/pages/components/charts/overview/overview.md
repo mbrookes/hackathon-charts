@@ -30,7 +30,7 @@ This is the set of charts available at this moment:
 ```
 
 Note that each part of the chart (the grid, the axes, the lines, the legend etc.) is defined as a component, rendered as a children in the chart.
-You can add/remove any part that you would not like to use, and you would not have that component in your bundle.
+You can add/remove any part of the chart that you don't wish to use, and you will not have that component in your bundle.
 
 ### Bar Charts
 
