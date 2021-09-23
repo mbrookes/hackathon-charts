@@ -10,7 +10,7 @@ title: Bar chart
 
 {{"demo": "pages/components/charts/bar-chart/BasicBarChart.js"}}
 
-## Multi-line chart
+## Multi-bar chart
 
 {{"demo": "pages/components/charts/bar-chart/MultiBarChart.js"}}
 
