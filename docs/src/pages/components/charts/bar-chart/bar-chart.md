@@ -14,6 +14,10 @@ title: Bar chart
 
 {{"demo": "pages/components/charts/bar-chart/MultiBarChart.js"}}
 
+## Stacked-bar chart
+
+{{"demo": "pages/components/charts/bar-chart/StackedBarChart.js"}}
+
 ## API
 
 - [BarChart](/api/data-grid/bar-chart-props/)

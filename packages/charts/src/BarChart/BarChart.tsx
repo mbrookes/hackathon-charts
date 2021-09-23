@@ -94,10 +94,6 @@ export interface BarChartProps<X = unknown, Y = unknown> {
    */
   seriesLabels?: string[];
   /**
-   * If `true`, the plotted bars will be smoothed.
-   */
-  smoothed?: boolean;
-  /**
    * If `true`, the data will be stacked.
    */
   stacked?: boolean;
@@ -148,7 +144,6 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(pr
     markerSize = 30,
     pixelsPerTick = 50,
     seriesLabels = [],
-    smoothed = false,
     stacked = false,
     xDomain: xDomainProp,
     xKey = 'x',
@@ -227,7 +222,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(pr
         seriesLabels,
         stacked,
         mousePosition,
-        smoothed,
+        padding,
         xKey,
         xScale,
         xScaleType,
