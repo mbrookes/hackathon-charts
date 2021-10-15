@@ -20,15 +20,13 @@ export default function ExpaindingPieChart() {
   const data = generateData();
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <PieChart
-        data={data}
-        expandOnHover
-        label="Car sales"
-        margin={{ top: 70, bottom: 20 }}
-        segmentLabelRadius={170}
-        sort="ascending"
-      />
-    </div>
+    <PieChart
+      data={data}
+      expandOnHover
+      label="Car sales"
+      margin={{ top: 70, bottom: 20 }}
+      segmentLabelRadius={170}
+      sort="ascending"
+    />
   );
 }
