@@ -27,32 +27,30 @@ const domains2 = [
 
 export default function BasicScatterChart() {
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <ScatterChart
-        data={[generateDataset(...domains1), generateDataset(...domains2)]}
-        label="Mine vs Yours"
-        margin={{ top: 70 }}
-        markerShape="auto"
-        yDomain={null}
-      >
-        <Grid
-          strokeDasharray="5"
-          zeroStroke="rgba(200,200,200,0.5)"
-          zeroStrokeDasharray="0"
-        />
-        <Scatter
-          series={0}
-          stroke="rgba(255, 100, 0, 0.7)"
-          fill="rgba(255, 100, 0, 0.5)"
-        />
-        <Scatter
-          series={1}
-          stroke="rgba(0, 100, 255, 0.7)"
-          fill="rgba(0, 100, 255, 0.5)"
-        />
-        <XAxis suffix="cm" disableTicks />
-        <YAxis suffix="kg" disableTicks />
-      </ScatterChart>
-    </div>
+    <ScatterChart
+      data={[generateDataset(...domains1), generateDataset(...domains2)]}
+      label="Mine vs Yours"
+      margin={{ top: 70 }}
+      markerShape="auto"
+      yDomain={null}
+    >
+      <Grid
+        strokeDasharray="5"
+        zeroStroke="rgba(200,200,200,0.5)"
+        zeroStrokeDasharray="0"
+      />
+      <Scatter
+        series={0}
+        stroke="rgba(255, 100, 0, 0.7)"
+        fill="rgba(255, 100, 0, 0.5)"
+      />
+      <Scatter
+        series={1}
+        stroke="rgba(0, 100, 255, 0.7)"
+        fill="rgba(0, 100, 255, 0.5)"
+      />
+      <XAxis suffix="cm" disableTicks />
+      <YAxis suffix="kg" disableTicks />
+    </ScatterChart>
   );
 }

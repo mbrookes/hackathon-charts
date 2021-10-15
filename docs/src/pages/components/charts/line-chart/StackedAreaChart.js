@@ -7,34 +7,32 @@ import Grid from '@mui/charts/Grid';
 
 export default function StackedAreaChart() {
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <LineChart
-        keys={['open', 'close']}
-        data={stackData}
-        smoothed
-        stacked
-        xScaleType="time"
-        xKey="date"
-        xDomain={[new Date(2020, 0, 1), new Date(2022, 9, 1)]}
-        yDomain={[0, 450]}
-      >
-        <Grid disableX />
-        <XAxis />
-        <YAxis />
-        <Line
-          series={1}
-          stroke="rgb(150,219,124)"
-          fill="rgba(150,219,124,0.5)"
-          strokeWidth={2}
-        />
-        <Line
-          series={0}
-          stroke="rgb(116,205,240)"
-          fill="rgba(116,205,240,0.5)"
-          strokeWidth={2}
-        />
-      </LineChart>
-    </div>
+    <LineChart
+      keys={['open', 'close']}
+      data={stackData}
+      smoothed
+      stacked
+      xScaleType="time"
+      xKey="date"
+      xDomain={[new Date(2020, 0, 1), new Date(2022, 9, 1)]}
+      yDomain={[0, 450]}
+    >
+      <Grid disableX />
+      <XAxis />
+      <YAxis />
+      <Line
+        series={1}
+        stroke="rgb(150,219,124)"
+        fill="rgba(150,219,124,0.5)"
+        strokeWidth={2}
+      />
+      <Line
+        series={0}
+        stroke="rgb(116,205,240)"
+        fill="rgba(116,205,240,0.5)"
+        strokeWidth={2}
+      />
+    </LineChart>
   );
 }
 

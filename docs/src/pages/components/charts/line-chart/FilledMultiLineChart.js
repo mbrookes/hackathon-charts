@@ -8,36 +8,34 @@ import Legend from '@mui/charts/Legend';
 
 export default function FilledMultiLineChart() {
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <LineChart
-        data={[data1, data2]}
-        smoothed
-        label="Issues"
-        margin={{ top: 70, bottom: 70, left: 60 }}
-        markerShape="auto"
-        markerSize={40}
-        xScaleType="time"
-      >
-        <Grid disableX />
-        <XAxis label="Year" />
-        <YAxis label="Size" suffix="cm" disableLine disableTicks />
-        <Line
-          series={0}
-          stroke="rgb(116,205,240)"
-          fill="rgba(136,225,250,0.1)"
-          strokeWidth={2}
-          label="Open"
-        />
-        <Line
-          series={1}
-          stroke="rgb(150,219,124)"
-          fill="rgba(170,239,144,0.1)"
-          strokeWidth={2}
-          label="Closed"
-        />
-        <Legend position="bottom" spacing={55} />
-      </LineChart>
-    </div>
+    <LineChart
+      data={[data1, data2]}
+      smoothed
+      label="Issues"
+      margin={{ top: 70, bottom: 70, left: 60 }}
+      markerShape="auto"
+      markerSize={40}
+      xScaleType="time"
+    >
+      <Grid disableX />
+      <XAxis label="Year" />
+      <YAxis label="Size" suffix="cm" disableLine disableTicks />
+      <Line
+        series={0}
+        stroke="rgb(116,205,240)"
+        fill="rgba(136,225,250,0.1)"
+        strokeWidth={2}
+        label="Open"
+      />
+      <Line
+        series={1}
+        stroke="rgb(150,219,124)"
+        fill="rgba(170,239,144,0.1)"
+        strokeWidth={2}
+        label="Closed"
+      />
+      <Legend position="bottom" spacing={55} />
+    </LineChart>
   );
 }
 

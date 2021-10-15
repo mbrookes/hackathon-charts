@@ -14,27 +14,25 @@ const stackData = [
 ];
 export default function StackedBarChart() {
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <BarChart
-        keys={['apples', 'bananas', 'oranges']}
-        data={stackData}
-        stacked
-        xScaleType="time"
-        xKey="month"
-        xDomain={[new Date(2021, 1, 1), new Date(2021, 4, 1)]}
-        yDomain={[0, 60]}
-        margin={{ top: 60, bottom: 70, left: 60 }}
-        label="Sales"
-        padding={20}
-      >
-        <Grid disableX />
-        <Bar series={2} label="MUI X Pro" fill="rgba(234,95,95,0.8)" />
-        <Bar series={1} label="Templates" fill="rgba(150,219,124,0.8)" />
-        <Bar series={0} label="Design kits" fill="rgba(116,205,240,0.8)" />
-        <XAxis />
-        <YAxis disableLine disableTicks label="USD (K)" />
-        <Legend position="bottom" spacing={76} />
-      </BarChart>
-    </div>
+    <BarChart
+      keys={['apples', 'bananas', 'oranges']}
+      data={stackData}
+      stacked
+      xScaleType="time"
+      xKey="month"
+      xDomain={[new Date(2021, 1, 1), new Date(2021, 4, 1)]}
+      yDomain={[0, 60]}
+      margin={{ top: 60, bottom: 70, left: 60 }}
+      label="Sales"
+      padding={20}
+    >
+      <Grid disableX />
+      <Bar series={2} label="MUI X Pro" fill="rgba(234,95,95,0.8)" />
+      <Bar series={1} label="Templates" fill="rgba(150,219,124,0.8)" />
+      <Bar series={0} label="Design kits" fill="rgba(116,205,240,0.8)" />
+      <XAxis />
+      <YAxis disableLine disableTicks label="USD (K)" />
+      <Legend position="bottom" spacing={76} />
+    </BarChart>
   );
 }

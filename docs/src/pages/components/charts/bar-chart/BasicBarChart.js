@@ -33,21 +33,19 @@ export default function BasicBarChart() {
 
   const theme = useTheme();
   return (
-    <div style={{ width: '100%', height: 400 }}>
-      <BarChart
-        data={chartData}
-        xScaleType="linear"
-        xDomain={[0, 23]}
-        label="Commits to the MUI repo by hour of day"
-        tickSpacing={30}
-        padding={5}
-        margin={{ top: 60 }}
-      >
-        <Grid disableX />
-        <XAxis />
-        <YAxis />
-        <Bar stroke="rgb(235,97,97)" fill={theme.palette.primary.main} />
-      </BarChart>
-    </div>
+    <BarChart
+      data={chartData}
+      xScaleType="linear"
+      xDomain={[0, 23]}
+      label="Commits to the MUI repo by hour of day"
+      tickSpacing={30}
+      padding={5}
+      margin={{ top: 60 }}
+    >
+      <Grid disableX />
+      <XAxis />
+      <YAxis />
+      <Bar stroke="rgb(235,97,97)" fill={theme.palette.primary.main} />
+    </BarChart>
   );
 }
