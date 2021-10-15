@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import { useForkRef } from '@mui/material/utils';
 import useChartDimensions from '../hooks/useChartDimensions';
 import PieSegment from '../PieSegment';
+import { stringRatioToNumber } from '../utils';
 
 interface ChartData {
   value: number;
@@ -42,6 +43,10 @@ export interface PieChartProps {
    * Background fill color for the chart. Typically used when creating a guage.
    */
   fill?: string;
+  /**
+   * The height of the chart.
+   */
+  height?: number;
   /**
    * The label to place at the center of the chart. Typically used with `innerRadius` to create a gauge.
    */
@@ -83,6 +88,11 @@ export interface PieChartProps {
    */
   radius?: number;
   /**
+   * The ratio of the height to the width of the chart.
+   * @default 0.5
+   */
+  ratio?: string | number;
+  /**
    * The color of the segment labels.
    * @default 'currentColor'
    */
@@ -112,6 +122,7 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
     endAngle: endAngleProp,
     expandOnHover = false,
     fill,
+    height: heightProp,
     innerLabel,
     innerLabelFontSize = 24,
     innerRadius = 0,
@@ -120,6 +131,7 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
     labelFontSize = 18,
     margin: marginProp,
     radius: radiusProp,
+    ratio: ratioProp,
     segmentLabelColor = 'currentColor',
     segmentLabelFontSize = 12,
     segmentLabelRadius,
@@ -129,6 +141,7 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
   } = props;
 
   const margin = { top: 10, bottom: 10, left: 10, right: 10, ...marginProp };
+  const ratio = typeof ratioProp === 'string' ? stringRatioToNumber(ratioProp) : ratioProp || 0.5;
 
   const chartSettings = {
     marginTop: margin.top,
@@ -154,7 +167,6 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
   const endAngle = endAngleProp
     ? (((endAngleProp * Math.PI) / 180) * percentVisible) / 100
     : startAngle + ((((360 - startAngle) * Math.PI) / 180) * percentVisible) / 100;
-
   const pie = d3
     .pie()
     .startAngle(startAngle)
@@ -175,9 +187,15 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
   }, [data]);
 
   const radius = radiusProp || Math.min(boundedWidth, boundedHeight) / 2;
+  const chartHeight = heightProp || width * ratio;
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} ref={handleRef} {...other}>
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      ref={handleRef}
+      style={{ width: '100%', height: chartHeight }}
+      {...other}
+    >
       <g
         transform={`translate(${boundedWidth / 2 + margin.left}, ${
           boundedHeight / 2 + margin.top
