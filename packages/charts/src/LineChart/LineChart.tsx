@@ -7,7 +7,7 @@ import useScale from '../hooks/useScale';
 import useStackedArrays from '../hooks/useStackedArrays';
 import useThrottle from '../hooks/useThrottle';
 import useTicks from '../hooks/useTicks';
-import { getExtent, getMaxDataSetLength } from '../utils';
+import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
 interface ChartData<X, Y> {
   x: X;
@@ -94,9 +94,10 @@ export interface LineChartProps<X = unknown, Y = unknown> {
    */
   markerSize?: number;
   /**
-   * The ratio of the width to the height of the chart.
+   * The ratio of the height to the width of the chart.
+   * @default 0.5
    */
-  ratio?: number;
+  ratio?: string | number;
   /**
    * The maximum number of pixels per tick.
    */
@@ -160,7 +161,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     margin: marginProp,
     markerShape = 'circle',
     markerSize = 30,
-    ratio = 2,
+    ratio: ratioProp,
     tickSpacing = 50,
     smoothed = false,
     stacked = false,
@@ -185,6 +186,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   }
 
   const margin = { top: 40, bottom: 40, left: 50, right: 30, ...marginProp };
+  const ratio = typeof ratioProp === 'string' ? stringRatioToNumber(ratioProp) : ratioProp || 0.5;
 
   const chartSettings = {
     marginTop: margin.top,
@@ -248,7 +250,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   };
 
   const chartId = useId(idProp);
-  const chartHeight = heightProp || Math.ceil(width / ratio);
+  const chartHeight = heightProp || (width * ratio);
   return (
     <ChartContext.Provider
       value={{

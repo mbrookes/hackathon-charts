@@ -69,3 +69,11 @@ export function getSymbol(shape, series = 0) {
   }
   return symbolNames.indexOf(shape) || 0;
 }
+
+// Converts a ratio of string type to number
+// e.g., "1:2" to 0.5
+export function stringRatioToNumber(stringRatio) {
+  const arr = stringRatio.split(':').map((value) => Number(value.trim()));
+  const res = arr[0] / arr[1];
+  return arr.length === 2 && typeof res === 'number' ? res : 0.5;
+}

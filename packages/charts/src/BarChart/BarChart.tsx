@@ -7,7 +7,7 @@ import useStackedArrays from '../hooks/useStackedArrays';
 import useTicks from '../hooks/useTicks';
 import useScale from '../hooks/useScale';
 import useThrottle from '../hooks/useThrottle';
-import { getExtent, getMaxDataSetLength } from '../utils';
+import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
 interface ChartData<X, Y> {
   x: X;
@@ -61,6 +61,11 @@ export interface BarChartProps<X = unknown, Y = unknown> {
    * Labels and axes fall within these margins.
    */
   margin?: Margin;
+  /**
+   * The ratio of the height to the width of the chart.
+   * @default 0.5
+   */
+  ratio?: string | number;
   /**
    * The maximum number of pixels between tick marks.
    */
@@ -122,10 +127,12 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
     children,
     data: dataProp,
     fill = 'none',
+    height: heightProp,
     label,
     labelColor = 'currentColor',
     labelFontSize = 18,
     margin: marginProp,
+    ratio: ratioProp,
     tickSpacing = 40,
     seriesLabels = [],
     stacked = false,
@@ -151,6 +158,8 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
   }
 
   const margin = { top: 40, bottom: 40, left: 50, right: 30, ...marginProp };
+  const ratio = typeof ratioProp === 'string' ? stringRatioToNumber(ratioProp) : ratioProp || 0.5;
+
   const chartSettings = {
     marginTop: margin.top,
     marginRight: margin.right,
@@ -197,6 +206,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
       y: -1,
     });
   };
+  const chartHeight = heightProp || (width * ratio);
 
   return (
     <ChartContext.Provider
@@ -226,6 +236,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
         {...other}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
+        style={{ width: '100%', height: chartHeight }}
       >
         <rect width={width} height={height} fill={fill} rx="4" />
         <g transform={`translate(${[marginLeft, marginTop].join(',')})`}>

@@ -4,7 +4,7 @@ import ChartContext from '../ChartContext';
 import useChartDimensions from '../hooks/useChartDimensions';
 import useTicks from '../hooks/useTicks';
 import useScale from '../hooks/useScale';
-import { getExtent, getMaxDataSetLength } from '../utils';
+import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
 interface ChartData<X, Y> {
   x: X;
@@ -81,6 +81,11 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
    */
   markerSize?: number;
   /**
+   * The ratio of the height to the width of the chart.
+   * @default 0.5
+   */
+  ratio?: string | number;
+  /**
    * The maximum number of pixels per tick.
    */
   tickSpacing?: number;
@@ -136,12 +141,14 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
     children,
     data,
     fill = 'none',
+    height: heightProp,
     invertMarkers = false,
     label,
     labelColor = 'currentColor',
     labelFontSize = 18,
     margin: marginProp,
     markerShape = 'circle',
+    ratio: ratioProp,
     tickSpacing = 50,
     xDomain: xDomainProp,
     xKey = 'x',
@@ -155,6 +162,7 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
   } = props;
 
   const margin = { top: 40, bottom: 40, left: 50, right: 30, ...marginProp };
+  const ratio = typeof ratioProp === 'string' ? stringRatioToNumber(ratioProp) : ratioProp || 0.5;
   const chartSettings = {
     marginTop: margin.top,
     marginBottom: margin.bottom,
@@ -183,6 +191,7 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
     tickSpacing,
     maxTicks: 999,
   });
+  const chartHeight = heightProp || (width * ratio);
 
   return (
     <ChartContext.Provider
@@ -201,7 +210,12 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
         zKey,
       }}
     >
-      <svg viewBox={`0 0 ${width} ${height}`} ref={handleRef} {...other}>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        ref={handleRef}
+        {...other}
+        style={{ width: '100%', height: chartHeight }}
+      >
         <rect width={width} height={height} fill={fill} rx="4" />
         <g transform={`translate(${[marginLeft, marginTop].join(',')})`}>
           <g>{children}</g>
