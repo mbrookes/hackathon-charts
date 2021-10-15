@@ -94,6 +94,10 @@ export interface LineChartProps<X = unknown, Y = unknown> {
    */
   markerSize?: number;
   /**
+   * The ratio of the width to the height of the chart.
+   */
+  ratio?: number;
+  /**
    * The maximum number of pixels per tick.
    */
   tickSpacing?: number;
@@ -147,6 +151,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     data: dataProp,
     fill = 'none',
     highlightMarkers = false,
+    height: heightProp,
     id: idProp,
     invertMarkers = false,
     label,
@@ -155,6 +160,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     margin: marginProp,
     markerShape = 'circle',
     markerSize = 30,
+    ratio = 2,
     tickSpacing = 50,
     smoothed = false,
     stacked = false,
@@ -242,7 +248,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   };
 
   const chartId = useId(idProp);
-
+  const chartHeight = heightProp || Math.ceil(width / ratio);
   return (
     <ChartContext.Provider
       value={{
@@ -276,6 +282,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
         {...other}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
+        style={{ width: '100%', height: chartHeight }}
       >
         <defs>
           <clipPath id={`${chartId}-clipPath`}>

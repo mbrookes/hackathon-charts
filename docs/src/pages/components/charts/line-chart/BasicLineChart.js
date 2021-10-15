@@ -7,14 +7,12 @@ import Grid from '@mui/charts/Grid';
 
 export default function BasicLineChart() {
   return (
-    <div style={{ width: '100%', height: 400 }}>
       <LineChart data={data} xScaleType="time" tickSpacing={62}>
         <Grid />
         <XAxis />
         <YAxis suffix="kg" />
         <Line stroke="rgb(235,97,97)" markerShape="none" />
       </LineChart>
-    </div>
   );
 }
 
