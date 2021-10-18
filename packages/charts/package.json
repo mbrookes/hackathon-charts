@@ -1,13 +1,13 @@
 {
-  "name": "@mui/charts",
-  "version": "0.1.0",
-  "description": "MUI React charts",
+  "name": "hackathon-charts",
+  "version": "0.1.2",
+  "description": "MUI hackathon React charts",
   "author": "MUI Team",
-  "main": "dist/index-cjs.js",
-  "module": "dist/index-esm.js",
-  "types": "dist/data-grid.d.ts",
+  "main": "build/index-cjs.js",
+  "module": "build/index-esm.js",
+  "types": "build/charts.d.ts",
   "files": [
-    "dist/*"
+    "build/*"
   ],
   "license": "MIT",
   "bugs": {
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "typescript": "tsc -p tsconfig.json",
-    "build": "cd ../ && rollup --config rollup.charts.config.js"
+    "build": "rollup --config rollup.charts.config.js"
   },
   "keywords": [
     "react",
@@ -36,7 +36,8 @@
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "@mui/material": "^5.0.0"
   },
   "devDependencies": {
     "@types/d3": "^6.7.0"

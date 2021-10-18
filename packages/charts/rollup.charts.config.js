@@ -31,7 +31,7 @@ export default [
         cleaner({
           targets: ['./build/'],
         }),
-      typescript({ tsconfig: 'tsconfig.build.json' }),
+      typescript({ tsconfig: 'tsconfig.json' }),
       babel({
         babelHelpers: 'bundled',
         extensions: ['.tsx'],
@@ -50,7 +50,7 @@ export default [
   },
   {
     input: './build/src/index.d.ts',
-    output: [{ file: './build/charts.d.ts', format: 'es' }],
+    output: [{ file: './build/charts.d.ts', format: 'es' }], // maybe index.d.ts?
     plugins: [
       dts(),
       !production && sourceMaps(),
@@ -78,11 +78,11 @@ export default [
             },
           ],
         }),
-      production &&
-        command([`rm -rf ./build/`], {
-          exitOnFail: true,
-          wait: true,
-        }),
+      // production &&
+      //   command([`rm -rf ./build/`], {
+      //     exitOnFail: true,
+      //     wait: true,
+      //   }),
     ],
   },
 ];

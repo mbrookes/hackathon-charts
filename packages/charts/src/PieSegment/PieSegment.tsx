@@ -98,6 +98,7 @@ function PieSegment(props: PieSegmentProps) {
       <path
         fill={data.data.fill}
         stroke={data.data.stroke}
+        // @ts-ignore TODO: fix me
         d={arc(data)}
         onMouseOver={mouseOver}
         onMouseOut={mouseOut}
@@ -106,6 +107,7 @@ function PieSegment(props: PieSegmentProps) {
         textAnchor="middle"
         fill={labelColor}
         fontSize={labelFontSize}
+        // @ts-ignore TODO: fix me
         transform={`translate(${labelArc.centroid(data)})`}
       >
         {label}

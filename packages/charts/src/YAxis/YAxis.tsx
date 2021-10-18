@@ -6,7 +6,7 @@ const YAxis = (props) => {
   const {
     dimensions: { boundedHeight },
     yTicks,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
   const {
     disableLine = false,
     disableTicks = false,

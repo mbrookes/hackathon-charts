@@ -9,7 +9,7 @@ function Legend(props) {
     dimensions: { boundedHeight, boundedWidth },
     invertMarkers,
     seriesMeta,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
 
   const {
     labelColor = '#777',
@@ -43,13 +43,16 @@ function Legend(props) {
           return (
             <React.Fragment key={series}>
               <path
+                // @ts-ignore TODO: Fix me
                 d={d3.symbol(d3.symbols[getSymbol(markerShape, series)], markerSize)()}
                 fill={invertMarkers ? stroke : fill}
                 stroke={invertMarkers ? fill : stroke}
+                // @ts-ignore TODO: Fix me
                 transform={`translate(${series * spacing - markerSize / 5}, -4)`}
               />
               <text
                 fill={labelColor}
+                // @ts-ignore TODO: Fix me
                 transform={`translate(${series * spacing}, 0)`}
                 fontSize={labelFontSize}
                 // textAnchor="middle"

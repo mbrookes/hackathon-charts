@@ -27,7 +27,7 @@ const Tooltip = (props) => {
     xScale,
     yKey,
     seriesMeta,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
 
   const {
     stroke = 'rgba(200, 200, 200, 0.8)',
@@ -117,6 +117,7 @@ const Tooltip = (props) => {
                       >
                         <svg width={markerSize} height={markerSize}>
                           <path
+                            // @ts-ignore TODO: Fix me
                             d={d3.symbol(
                               d3.symbols[getSymbol(d.markerShape, d.series)],
                               markerSize,

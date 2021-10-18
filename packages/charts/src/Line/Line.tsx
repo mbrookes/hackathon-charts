@@ -23,7 +23,7 @@ const Line = (props) => {
     xScale,
     yKey,
     yScale,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
 
   const {
     data: dataProp,
@@ -54,11 +54,13 @@ const Line = (props) => {
   if (stacked && keys) {
     linePath = d3
       .line()
+      // @ts-ignore TODO: Fix me
       .x((d) => xScale(d.data[xKey]))
       .y((d) => -yScale(d[1]));
 
     areaPath = d3
       .area()
+      // @ts-ignore TODO: Fix me
       .x((d) => xScale(d.data[xKey]))
       .y0((d) => -yScale(d[0]))
       .y1((d) => -yScale(d[1]));
@@ -112,6 +114,7 @@ const Line = (props) => {
           zDomain={[5, 5]}
           markerShape={markerShape}
           series={series}
+          // @ts-ignore TODO: Fix me
           shape={markerShape}
           stroke={stroke}
           strokeWidth={strokeWidth}

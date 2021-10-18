@@ -14,7 +14,7 @@ const Bar = (props) => {
     xScale,
     yKey,
     yScale,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
 
   const { data: dataProp, fill, series, label } = props;
 
@@ -43,7 +43,7 @@ const Bar = (props) => {
     let result = xScale(d[xKey]) - barWidth / 2;
     if (isMultiBar) {
       result = xScale(d[xKey]);
-      const numOfSeries = data.length;
+      const numOfSeries: number = data.length;
       if (numOfSeries % 2 === 0) {
         // even num
         const center = numOfSeries / 2;
@@ -53,7 +53,7 @@ const Bar = (props) => {
         return result - (center - series) * barWidth;
       }
       {
-        const center = parseInt(numOfSeries / 2, 10);
+        const center = parseInt(Number(numOfSeries / 2).toString(), 10);
         if (series === center) {
           return result - barWidth / 2;
         }

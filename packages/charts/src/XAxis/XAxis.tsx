@@ -6,7 +6,7 @@ const XAxis = (props) => {
   const {
     dimensions: { boundedHeight, boundedWidth },
     xTicks,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
   const {
     disableLine = false,
     disableTicks = false,

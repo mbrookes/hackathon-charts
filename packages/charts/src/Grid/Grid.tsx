@@ -7,7 +7,7 @@ const Grid = (props) => {
     dimensions: { boundedWidth, boundedHeight },
     xTicks,
     yTicks,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
   const {
     disableX = false,
     disableY = false,

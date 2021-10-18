@@ -179,6 +179,7 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   if (stacked) {
     if (keys) {
       const stackGen = d3.stack().keys(keys);
+      // @ts-ignore TODO: fix me
       data = stackGen(dataProp);
     } else {
       data = stackedData;

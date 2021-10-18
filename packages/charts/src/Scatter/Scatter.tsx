@@ -23,7 +23,7 @@ const Scatter = (props) => {
     yScale,
     zDomain: zDomainContext,
     zKey: zKeyContext,
-  } = useContext(ChartContext);
+  } = useContext(ChartContext) as any;
 
   const {
     data: dataProp,
@@ -58,9 +58,11 @@ const Scatter = (props) => {
   return (
     <g>
       {chartData.map(
+        // @ts-ignore TODO: Fix me
         ({ [xKey]: x, [yKey]: y, [zKey]: z }, i) =>
           (markerShape !== 'none' || highlightMarker(x)) && (
             <path
+              // @ts-ignore TODO: Fix me
               d={d3.symbol(
                 d3.symbols[getSymbol(markerShape, series)],
                 z ? plot(z, zDomain, maxSize - minSize) + minSize : minSize,
