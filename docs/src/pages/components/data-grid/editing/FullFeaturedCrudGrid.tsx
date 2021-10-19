@@ -12,6 +12,7 @@ import {
   GridApiRef,
   GridColumns,
   GridRowParams,
+  GridCellParams,
   MuiEvent,
   GridToolbarContainer,
   GridActionsCellItem,
@@ -22,13 +23,13 @@ import {
   randomUpdatedDate,
   randomId,
 } from '@mui/x-data-grid-generator';
-import { createTheme, Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 const defaultTheme = createTheme();
 
 const useStyles = makeStyles(
-  (theme: Theme) => ({
+  (theme) => ({
     actions: {
       color: theme.palette.text.secondary,
     },
@@ -94,7 +95,7 @@ function EditToolbar(props: EditToolbarProps) {
         rowIndex: apiRef.current.getRowsCount() - 1,
       });
       apiRef.current.setCellFocus(id, 'name');
-    }, 150);
+    });
   };
 
   return (
@@ -120,6 +121,13 @@ export default function FullFeaturedCrudGrid() {
   const handleRowEditStop = (
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>,
+  ) => {
+    event.defaultMuiPrevented = true;
+  };
+
+  const handleCellFocusOut = (
+    params: GridCellParams,
+    event: MuiEvent<React.SyntheticEvent<Element, Event> | MouseEvent>,
   ) => {
     event.defaultMuiPrevented = true;
   };
@@ -225,6 +233,7 @@ export default function FullFeaturedCrudGrid() {
         editMode="row"
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
+        onCellFocusOut={handleCellFocusOut}
         components={{
           Toolbar: EditToolbar,
         }}

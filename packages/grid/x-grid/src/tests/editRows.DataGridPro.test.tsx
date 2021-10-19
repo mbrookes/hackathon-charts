@@ -51,6 +51,7 @@ describe('<DataGridPro /> - Edit Rows', () => {
         { field: 'brand', editable: true },
         { field: 'year', editable: true },
       ],
+      throttleRowsMs: 0,
     };
   });
 
@@ -372,12 +373,7 @@ describe('<DataGridPro /> - Edit Rows', () => {
 
   // TODO add one test for each column type because what really sets the focus is the autoFocus prop
   it('should move the focus to the new field', () => {
-    const handleCellBlur = (params, event) => {
-      if (params.cellMode === 'edit') {
-        event?.stopPropagation();
-      }
-    };
-    render(<TestCase onCellBlur={handleCellBlur} />);
+    render(<TestCase />);
     // Turn first cell into edit mode
     apiRef.current.setCellMode(0, 'brand', 'edit');
 

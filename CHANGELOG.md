@@ -3,6 +3,250 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 5.0.0-beta.4
+
+_Oct 14, 2021_
+
+A big thanks to the 7 contributors who made this release possible. Here are some highlights ✨:
+
+- 🎁 Add the ability to print the grid (#2519) @DanailH
+  
+  This new feature adds a button to the toolbar to generate a printer-friendly layout. Check the [documentation](https://mui.com/components/data-grid/export/#print) about it.
+
+- 💡 Enhance internal code structure
+- ✨ New slots for `row` and `cell` (#2753) @m4theushw
+- 📚 Documentation improvements
+- 🐞 Bugfixes
+
+### `@mui/x-data-grid@v5.0.0-beta.4` / `@mui/x-data-grid-pro@v5.0.0-beta.4`
+
+#### Breaking changes
+
+- [DataGrid] Remove unused event listeners and redundant DOM attributes on `GridCell` and `GridRow` (#2810) @m4theushw
+
+  The following props were removed. If you depend on them, use `componentsProps.row` and `componentsProps.cell` to pass custom props to the row or cell.
+
+  - `onCellBlur`
+  - `onCellOver`
+  - `onCellOut`
+  - `onCellEnter`
+  - `onCellLeave`
+  - `onRowOver`
+  - `onRowOut`
+  - `onRowEnter`
+  - `onRowLeave`
+
+  For more information, check [this page](https://mui.com/components/data-grid/components/#row). Example:
+
+  ```diff
+  -<DataGrid onRowOver={handleRowOver} />;
+  +<DataGrid
+  +  componentsProps={{
+  +    row: { onMouseOver: handleRowOver },
+  +  }}
+  +/>;
+  ```
+  
+  The `data-rowindex` and `data-rowselected` attributes were removed from the cell element. Equivalent attributes can be found in the row element.
+  
+  The `data-editable` attribute was removed from the cell element. Use the `.MuiDataGrid-cell--editable` CSS class.
+  
+  The `data-mode` attribute was removed from the cell element. Use the `.MuiDataGrid-cell--editing` CSS class.
+
+- [DataGrid] The `state.filter` and `state.visibleRows` were merged into a single `state.filter` sub-state (#2782) @flaviendelangle
+
+  To still access this information, use `state.filter` or the selectors as below:
+
+  ```diff
+  -const filterModel = state.filter
+  -const filterModel = gridFilterStateSelector(state)
+  +const filterModel = state.filter.filterModel
+  +const filterModel = gridFilterModelSelector(state) // preferred method
+  
+  -const visibleRowsLookup = state.visibleRows.visibleRowsLookup
+  -const visibleRowsLookup = visibleGridRowsStateSelector(state).visibleRowsLookup
+  +const visibleRowsLookup = state.filter.visibleRowsLookup
+  +const visibleRowsLookup = gridVisibleRowsLookupSelector(state).visibleRowsLookup // preferred method
+  
+  -const visibleRows = state.visibleRows.visibleRows
+  +const visibleRows = state.filter.visibleRows
+  +const visibleRows = gridVisibleRowsLookupSelector(state).visibleRows // preferred method
+  ```
+
+- [DataGrid] The CSS classes constants are not exported anymore. Use `gridClasses` instead. (#2788) @flaviendelangle
+
+  ```diff
+  -const columnHeaderClass = GRID_COLUMN_HEADER_CSS_CLASS
+  +const columnHeaderClass = gridClasses.columnHeader
+  
+  -const rowClass = GRID_ROW_CSS_CLASS
+  +const rowClass = gridClasses.row
+  
+  -const cellClass = GRID_CELL_CSS_CLASS
+  +const cellClass = gridClasses.cell
+  
+  -const columnSeparatorClass = GRID_COLUMN_HEADER_SEPARATOR_RESIZABLE_CSS_CLASS
+  +const columnSeparatorClass = gridClasses['columnSeparator--resizable']
+  
+  -const columnHeaderTitleClass = GRID_COLUMN_HEADER_TITLE_CSS_CLASS
+  +const columnHeaderTitleClass = gridClasses.columnHeaderTitle
+  
+  -const columnHeaderDropZoneClass = GRID_COLUMN_HEADER_DROP_ZONE_CSS_CLASS
+  +const columnHeaderDropZoneClass = gridClasses.columnHeaderDropZone
+  
+  -const columnHeaderDraggingClass = GRID_COLUMN_HEADER_DRAGGING_CSS_CLASS
+  +const columnHeaderDraggingClass = gridClasses["columnHeader--dragging"]
+  ```
+
+- [DataGrid] Rename `gridCheckboxSelectionColDef` to `GRID_CHECKBOX_SELECTION_COL_DEF` (#2793) @flaviendelangle
+
+  ```diff
+  - gridCheckboxSelectionColDef
+  + GRID_CHECKBOX_SELECTION_COL_DEF
+  ```
+
+- [DataGrid] The constants referring to the column types were removed (#2791) @flaviendelangle
+  Replace them as below:
+
+  ```diff
+  -const isColumnString = column.type === GRID_STRING_COLUMN_TYPE;
+  +const isColumnString = col.type === 'string';
+  
+  -const isColumnNumber = col.type === GRID_NUMBER_COLUMN_TYPE;
+  +const isColumnNumber = col.type === 'number';
+  
+  -const isColumnDate = col.type === GRID_DATE_COLUMN_TYPE;
+  +const isColumnDate = col.type === 'date';
+  
+  -const isColumnDateTime = col.type === GRID_DATETIME_COLUMN_TYPE;
+  +const isColumnDateTime = col.type === 'dateTime';
+  
+  -const isColumnBoolean = col.type === GRID_BOOLEAN_COLUMN_TYPE;
+  +const isColumnBoolean = col.type === 'boolean';
+  ```
+
+- [DataGrid] The state initializers were removed (#2782) @flaviendelangle
+
+  Use `getDefaultGridFilterModel` instead of `getInitialGridFilterState`:
+
+  ```diff
+  -const [filterModel, setFilterModel] = React.useState(getInitialGridFilterState);
+  +const [filterModel, setFilterModel] = React.useState(getDefaultGridFilterModel);
+  ```
+  
+  For the other methods, you can hardcode the value you want to apply:
+
+  ```diff
+  -const [sortModel, setSortModel] = React.useState(() => getInitialGridSortingState().sortModel);
+  +const [sortModel, setSortModel] React.useState([]);
+  
+  -getInitialGridColumnReorderState
+  -getInitialGridColumnResizeState
+  -getInitialGridColumnsState
+  -getInitialGridRenderingState
+  -getInitialGridRowState
+  -getInitialGridState
+  -getInitialVisibleGridRowsState
+  -getInitialGridState
+  ```
+
+#### Changes
+
+- [DataGrid] Add `row` and `cell` component slots (#2753) @m4theushw
+- [DataGrid] Rename `gridCheckboxSelectionColDef` to `GRID_CHECKBOX_SELECTION_COL_DEF` (#2793) @flaviendelangle
+- [DataGrid] Clean hook folder structure and stop exporting internal hooks (#2789) @flaviendelangle
+- [DataGrid] Add support for Print export (#2519) @DanailH
+- [DataGrid] Remove internal localization and column type constant exports (#2791) @flaviendelangle
+- [DataGrid] Remove `GridRowCells` component (#2811) @m4theushw
+- [DataGrid] Remove class constants exports (#2788) @flaviendelangle
+- [DataGrid] Remove unused event listeners on `GridCell` and `GridRow` (#2810) @m4theushw
+- [DataGrid] Fix the header selection checkbox to work with `prop.checkboxSelectionVisibleOnly` (#2781) @flaviendelangle
+
+### Docs
+
+- [docs] Add link to installation page (#2778) @MostafaKMilly
+- [docs] Add redirect from docs home page to `DataGrid` home page (#2737) @flaviendelangle
+- [docs] Fix JSX closing tag in `getActions` example (#2847) @dstarner
+- [docs] Fix pagination in Ant Design demo (#2787) @ZeeshanTamboli
+- [docs] Update the `page` prop docs (#2812) @m4theushw
+
+### Core
+
+- [core] Update hooks to initialize their state synchronously (#2782) @flaviendelangle
+- [core] Fix rollup external warnings (#2736) @eps1lon
+
+## 5.0.0-beta.3
+
+_Oct 7, 2021_
+
+A big thanks to the 9 contributors who made this release possible. Here are some highlights ✨:
+
+- 🌎 Add Persian (faIR) locale (#2712) @devlifeX
+- 🎁 Allow to select range of rows with Shift + click (#2456) @flaviendelangle
+- 🚀 Allow to throttle the row updates with the `throttleRowsMs` prop on `DataGridPro` and remove the default 100ms row update delay (#2561) @flaviendelangle
+- 💡 Enhance internal code structure
+- 📚 Documentation improvements
+- 🐞 Bugfixes
+
+### `@mui/x-data-grid@v5.0.0-beta.3` / `@mui/x-data-grid-pro@v5.0.0-beta.3`
+
+#### Breaking changes
+
+- [DataGrid] Rename some selectors and interfaces to follow the codebase naming conventions (#2723) @flaviendelangle
+
+  The following selectors were renamed:
+
+  ```diff
+  -const filterModel = filterGridStateSelector(state);
+  +const filterModel = gridFilterModelSelector(state);
+  ```
+
+  ```diff
+  -const density: GridGridDensity = densitySelector(state);
+  +const density: GridDensityState = gridDensitySelector(state);
+  ```
+
+  ```diff
+  -const rendering: InternalRenderingState = gridRenderingSelector(state);
+  +const rendering: GridRenderingState = gridRenderingSelector(state);
+  ```
+
+#### Changes
+
+- [DataGrid] Add Persian (faIR) locale (#2712) @devlifeX
+- [DataGrid] Allow to select range of rows using Shift + click (#2456) @flaviendelangle
+- [DataGrid] Fix numeric column filter to not run when value is empty (#2780) @m4theushw
+- [DataGrid] Export `singleSelect` operators (#2666) @jeremyalan
+- [DataGrid] Fix Italian localization (#2717) @destegabry
+- [DataGrid] Fix `undefined` in filter panel (#2715) @DanailH
+- [DataGrid] Fix the fade-out transition of the `GridMenu` (#2734) @flaviendelangle
+- [DataGrid] Pass row `id` to `valueFormatter` (#2738) @m4theushw
+- [DataGrid] Fix `onSortModelChange` to not be called during initialization (#2724) @flaviendelangle
+- [DataGridPro] Stop drag event propagation (#2802) @DanailH
+- [DataGridPro] Fix keyboard navigation to work with filtered rows (#2800) @flaviendelangle
+
+### Docs
+
+- [docs] Add missing fonts (#2745) @m4theushw
+- [docs] Add page for scrolling API (#2634) @m4theushw
+- [docs] Add type to `onChange` event argument (#2669) @jayariglesias
+- [docs] Add explanation about the `id` usage in multiple filters in DataGridPro (#2783) @ZeeshanTamboli
+- [docs] Fix demo throwing error (#2719) @m4theushw
+- [docs] Fix index and improve playground page (#2755) @oliviertassinari
+
+### Core
+
+- [core] Add benchmark script (#2683) @m4theushw
+- [core] Clean error messages prefix (#2676) @flaviendelangle
+- [core] Do not regenerate columns of `useDemoData` on each render (#2747) @flaviendelangle
+- [core] Don't run benchmark on cached files (#2786) @m4theushw
+- [core] Drop localization v4 format (#2792) @flaviendelangle
+- [core] Remove useless state update in `useGridColumnMenu` (#2722) @flaviendelangle
+- [core] Remove v4 conditional code (#2575) @flaviendelangle
+- [core] Rework `useGridRows` high frequency update (#2561) @flaviendelangle
+- [core] Set up `eps1lon/actions-label-merge-conflict` action (#2751) @m4theushw
+- [core] Stop using selectors for Pro features on React components (#2716) @flaviendelangle
+
 ## 5.0.0-beta.2
 
 _Sep 24, 2021_
@@ -212,14 +456,14 @@ _Aug 27, 2021_
 
 🎉 This is the first stable release of the data grid component 🎉!
 
-We have been iterating on the component for [18 months](https://github.com/mui-org/material-ui-x/commit/705cb0f387b5f3aa056bf40c4183a2342b317447). With the introduction of the [row edit](https://material-ui.com/components/data-grid/editing/#row-editing) feature, many bug fixes, and polishing of the documentation, we believe the component is ready for a stable release.
+We have been iterating on the component for [18 months](https://github.com/mui-org/material-ui-x/commit/705cb0f387b5f3aa056bf40c4183a2342b317447). With the introduction of the [row edit](https://mui.com/components/data-grid/editing/#row-editing) feature, many bug fixes, and polishing of the documentation, we believe the component is ready for a stable release.
 
 The MUI X v4.0.0 release supports [MUI Core](https://github.com/mui-org/material-ui) v4 and has partial support for v5-beta. With the soon-to-be-released v5 version of the core components, we are moving ongoing work to the v5 release line (Core and X).
 The support for existing projects on MUI v4 won't be a priority going forward. We encourage you to migrate to MUI Core v5-beta and soon MUI X v5-beta. We don't patch, fix, or alter older versions. Using MUI Core v4 with MUI X v5 might lead to extra bundle size and configuration.
 
 A big thanks to the 6 contributors who made this release possible. Here are some highlights ✨:
 
-- 🚀 Introduce the [row editing](https://material-ui.com/components/data-grid/editing/#row-editing) feature (#2098) @m4theushw
+- 🚀 Introduce the [row editing](https://mui.com/components/data-grid/editing/#row-editing) feature (#2098) @m4theushw
 
   <img src="https://user-images.githubusercontent.com/3165635/130665023-3c0730ab-502e-4da1-8bc1-d572427ad2d6.gif" width="851" height="382" />
 
@@ -388,7 +632,7 @@ Big thanks to the 6 contributors who made this release possible. Here are some h
   ```
 
   - [XGrid] The `setEditCellProps` API call is not available anymore.
-    Use the [controlled editing](https://material-ui.com/components/data-grid/editing/#controlled-editing) or `setEditRowsModel`.
+    Use the [controlled editing](https://mui.com/components/data-grid/editing/#controlled-editing) or `setEditRowsModel`.
 
   ```diff
   -apiRef.current.setEditCellProps({ id, field, props: { ...props, error: true } });
@@ -473,7 +717,7 @@ Big thanks to the 8 contributors who made this release possible. Here are some h
 
 - [DataGrid] Improve controllable pagination (#2099) @flaviendelangle
 
-  - The `pageSize` is now a controlled prop. If you set a value, you also need to handle updates with onPageSizeChange. See [the documentation](https://material-ui.com/components/data-grid/pagination/#page-size).
+  - The `pageSize` is now a controlled prop. If you set a value, you also need to handle updates with onPageSizeChange. See [the documentation](https://mui.com/components/data-grid/pagination/#page-size).
   - Change the controllable API signature:
 
     ```diff
@@ -719,7 +963,7 @@ Big thanks to the 6 contributors who made this release possible. Here are some h
 - 🐛 We have fixed the `Select all` checkbox. When triggered, it should only select the filtered rows (#1879) @ZeeshanTamboli
 - ⚡️ We have added a new `singleSelect` column type (#1956) @DanailH
 
-  Using the column `type: 'singleSelect'` defaults to `Select` component when the cell is in `edit` mode. You can find the documentation [following this link](https://material-ui.com/components/data-grid/columns/#column-types).
+  Using the column `type: 'singleSelect'` defaults to `Select` component when the cell is in `edit` mode. You can find the documentation [following this link](https://mui.com/components/data-grid/columns/#column-types).
 
   ```jsx
   <DataGrid
@@ -917,7 +1161,7 @@ Big thanks to the 6 contributors who made this release possible. Here are some h
 - 💅 Allow to customize GridToolbarExport's CSV export (#1695) @michallukowski
 - 🐛 Allow to deselect rows with <kbd>CTRL</kbd> + click (#1813) @ZeeshanTamboli
 - ⚡️ Refactor scroll size detector (#1703) @dtassone
-- 📖 Add [documentation](https://material-ui.com/api/data-grid/) for interfaces and events (#1529) @m4theushw
+- 📖 Add [documentation](https://mui.com/api/data-grid/) for interfaces and events (#1529) @m4theushw
 - 🐞 Bugfixes
 
 ### @material-ui/x-grid@v4.0.0-alpha.31 / @material-ui/data-grid@v4.0.0-alpha.31
@@ -1089,7 +1333,7 @@ Big thanks to the 11 contributors who made this release possible. Here are some 
 - 💅 Add `columnHeader`, `row` and `cell` to the `classes` prop (#1660) @DanailH
 - ✅ Add the `isRowSelectable` prop to disable selection on certain rows (#1659) @m4theushw
 
-  See the documentation for [more details](https://material-ui.com/components/data-grid/selection/#disable-selection-on-certain-rows).
+  See the documentation for [more details](https://mui.com/components/data-grid/selection/#disable-selection-on-certain-rows).
 
 - ⚡️ Add new icon slot to be displayed when the column is unsorted (#1415) @m4theushw
 - ⚙ Improve consistency of the API to prepare for the first beta release
@@ -1337,7 +1581,7 @@ Big thanks to the 7 contributors who made this release possible. Here are some h
 
 - 💄 Release the cell editing feature (#1287) @dtassone
 
-  This is the first release of the Cell editing feature. You can find the documentation [following this link](https://material-ui.com/components/data-grid/editing/#cell-editing). We have spent the last three months working on it.
+  This is the first release of the Cell editing feature. You can find the documentation [following this link](https://mui.com/components/data-grid/editing/#cell-editing). We have spent the last three months working on it.
 
   ![cell edit](https://user-images.githubusercontent.com/3165635/115632215-87994700-a307-11eb-91d9-9f5537df0911.gif)
 
@@ -1464,7 +1708,7 @@ Big thanks to the 8 contributors who made this release possible. Here are some h
 - [DataGrid] Rename `useGridBaseComponentProps` hook to `useGridSlotComponentProps` (#1252) @DanailH
 - [DataGrid] Rename modules (#1292) @DanailH
 - [DataGrid] Rename all events related to column reordering, e.g. `GRID_COL_REORDER_START` -> `GRID_COLUMN_REORDER_START` (#1299) @m4theushw
-- [DataGrid] Methods `onColItemDragStart`, `onColHeaderDragOver`, `onColItemDragOver`, `onColItemDragEnter` removed from the grid API. Prefer listening to [column reordering events](https://material-ui.com/components/data-grid/columns/#column-reorder) (#1299) @m4theushw
+- [DataGrid] Methods `onColItemDragStart`, `onColHeaderDragOver`, `onColItemDragOver`, `onColItemDragEnter` removed from the grid API. Prefer listening to [column reordering events](https://mui.com/components/data-grid/columns/#column-reorder) (#1299) @m4theushw
 - [DataGrid] Calling `apiRef.current.getColumnHeaderParams` returns a `GridColumnHeaderParams` instead of `GridColParams` (#1299) @m4theushw
 - [DataGrid] Events that follow the pattern `GRID_COLUMN_HEADER_xxx` will be called with a `GridColumnHeaderParams` instead of `GridColParams` (#1299) @m4theushw
 - [DataGrid] The `renderHeader` will be called with a `GridColumnHeaderParams` instead of `GridColParams` (#1299) @m4theushw
@@ -1490,7 +1734,7 @@ Big thanks to the 7 contributors who made this release possible. Here are some h
 - 🎁 Add `onRowsScrollEnd` to support infinite loading (#1199) @DanailH
   This is an XGrid feature. Provides the ability to tap into the `onRowsScrollEnd` which is called when the scroll reaches the bottom of the grid viewport allowing developers to load additional data. It can be used with a combination of `scrollBottomThreshold` to control the area in which the `onRowsScrollEnd` is called.
 
-  See the documentation for [more details](https://material-ui.com/components/data-grid/rows/#infinite-loading).
+  See the documentation for [more details](https://mui.com/components/data-grid/rows/#infinite-loading).
 
 - 🕹 Provide the ability to sort by multiple columns using Shift+click (#1203) @dtassone
 - 🇵🇱 Added plPL locale (#1117) @LarsKumbier
@@ -1562,7 +1806,7 @@ Big thanks to the 7 contributors who made this release possible. Here are some h
 - 🎁 Add support for CSV export (#1030) @DanailH.
   This is the first iteration of the feature. You can either render the `GridToolbarExport` component in the toolbar or use the apiRef `exportDataAsCsv`/`getDataAsCsv` methods.
 
-  See the documentation for [more details](https://material-ui.com/components/data-grid/export/#csv-export).
+  See the documentation for [more details](https://mui.com/components/data-grid/export/#csv-export).
 
 - 🌏 Improve the support for custom locales (#1096, #1079, #1109, #1077)
 - ♿️ Fix a couple of accessibility issues with the popups (#1105, #1102)
@@ -1613,9 +1857,9 @@ _Feb 17, 2021_
 Big thanks to the 4 contributors who made this release possible. Here are some highlights ✨:
 
 - 📍 Add support for default locales (#983) @DanailH
-  We have built the infrastructure to support around 100 [default locales](https://material-ui.com/components/data-grid/localization/#supported-locales). If you have localized the data grid in your application. Please do consider contributing new translations back to Material-UI by opening a pull request.
+  We have built the infrastructure to support around 100 [default locales](https://mui.com/components/data-grid/localization/#supported-locales). If you have localized the data grid in your application. Please do consider contributing new translations back to Material-UI by opening a pull request.
 - 🎁 Add new `selectionModel` prop (#986) @dtassone
-  The prop can be used to control the selected rows in the data grid. [See the docs](https://material-ui.com/components/data-grid/selection/#controlled-selection).
+  The prop can be used to control the selected rows in the data grid. [See the docs](https://mui.com/components/data-grid/selection/#controlled-selection).
 - 💅 Add support for default props from theme (#1019) @DanailH
 - 🙌 Fix scrollbar size on windows (#1061) @dtassone
 - 🐛 Polish existing features, fix 9 issues.
@@ -1832,7 +2076,7 @@ Big thanks to the 5 contributors who made this release possible. Here are some h
 Big thanks to the 4 contributors who made this release possible. Here are some highlights ✨:
 
 - 🎛 Add support for Column selector (#837) @DanailH @dtassone.
-  The feature can be triggered from the toolbar or the column menu. Check [the documentation](https://material-ui.com/components/data-grid/columns/#column-selector).
+  The feature can be triggered from the toolbar or the column menu. Check [the documentation](https://mui.com/components/data-grid/columns/#column-selector).
 
   ![column selector](https://user-images.githubusercontent.com/3165635/104791267-6ff77300-579a-11eb-9338-11a8fde83258.gif)
 
@@ -1887,11 +2131,11 @@ Big thanks to the 5 contributors who made this release possible. Here are some h
 - 🌎 Add support for internationalization (#718) @DanailH
 
   You can use the `localeText` prop to provide custom wordings in the data grid.
-  Check the documentation for [a demo](https://material-ui.com/components/data-grid/localization/#translation-keys).
+  Check the documentation for [a demo](https://mui.com/components/data-grid/localization/#translation-keys).
 
 - 📚 Start documenting the filtering feature 🧪 (#754) @dtassone
 
-  The work in progress filtering feature and documentation can be found following [this link](https://material-ui.com/components/data-grid/filtering/). Early feedback are welcome.
+  The work in progress filtering feature and documentation can be found following [this link](https://mui.com/components/data-grid/filtering/). Early feedback are welcome.
 
 ### @material-ui/x-grid@v4.0.0-alpha.14 / @material-ui/data-grid@v4.0.0-alpha.14
 
@@ -1947,7 +2191,7 @@ Big thanks to the 4 contributors who made this release possible. Here are some h
 
 Big thanks to the 6 contributors who made this release possible. Here are some highlights ✨:
 
-- 🔍 Add a new data grid [density selector](https://material-ui.com/components/data-grid/rendering/#density) feature (#606) @DanailH.
+- 🔍 Add a new data grid [density selector](https://mui.com/components/data-grid/rendering/#density) feature (#606) @DanailH.
 - 💄 A first iteration on the data grid's toolbar.
 - 🧪 Continue the iteration on the data grid filtering feature, soon to be released @dtassone.
 
@@ -2171,7 +2415,7 @@ Big thanks to the 8 contributors who made this release possible. Here are some h
 
 This is the first public alpha release of the component after 6 months of development since the initial commit (March 15th 2020).
 `@material-ui/data-grid` is licensed under MIT while `@material-ui/x-grid` is licensed under a commercial license.
-You can find the documentation at this address: https://material-ui.com/components/data-grid/.
+You can find the documentation at this address: https://mui.com/components/data-grid/.
 
 ### @material-ui/x-grid@v4.0.0-alpha.1 / @material-ui/data-grid@v4.0.0-alpha.1
 

@@ -5,7 +5,7 @@ import {
   GridInputComponentProps,
 } from '../../_modules_/grid/GridComponentProps';
 import { useThemeProps } from '../../_modules_/grid/utils/material-ui-utils';
-import { useProcessedProps } from '../../_modules_/grid/hooks/utils/useProcessedProps';
+import { useGridProcessedProps } from '../../_modules_/grid/hooks/utils/useGridProcessedProps';
 
 type ForcedPropsKey = Exclude<keyof GridInputComponentProps, keyof DataGridProps> | 'pagination';
 
@@ -16,6 +16,7 @@ const FORCED_PROPS: { [key in ForcedPropsKey]-?: GridInputComponentProps[key] } 
   disableMultipleColumnsFiltering: true,
   disableMultipleColumnsSorting: true,
   disableMultipleSelection: true,
+  throttleRowsMs: undefined,
   hideFooterRowCount: false,
   pagination: true,
   onRowsScrollEnd: undefined,
@@ -40,5 +41,5 @@ export const useDataGridProps = (inProps: DataGridProps): GridComponentProps => 
     [themedProps],
   );
 
-  return useProcessedProps(props);
+  return useGridProcessedProps(props);
 };

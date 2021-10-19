@@ -87,7 +87,7 @@ function EditToolbar(props) {
       });
 
       apiRef.current.setCellFocus(id, 'name');
-    }, 150);
+    });
   };
 
   return (
@@ -114,6 +114,10 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleRowEditStop = (params, event) => {
+    event.defaultMuiPrevented = true;
+  };
+
+  const handleCellFocusOut = (params, event) => {
     event.defaultMuiPrevented = true;
   };
 
@@ -218,6 +222,7 @@ export default function FullFeaturedCrudGrid() {
         editMode="row"
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
+        onCellFocusOut={handleCellFocusOut}
         components={{
           Toolbar: EditToolbar,
         }}

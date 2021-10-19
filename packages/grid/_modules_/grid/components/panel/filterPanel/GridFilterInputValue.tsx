@@ -31,7 +31,7 @@ export interface GridTypeFilterInputValueProps extends GridFilterInputValueProps
 function GridFilterInputValue(props: GridTypeFilterInputValueProps & TextFieldProps) {
   const { item, applyValue, type, apiRef, ...others } = props;
   const filterTimeout = React.useRef<any>();
-  const [filterValueState, setFilterValueState] = React.useState(item.value || '');
+  const [filterValueState, setFilterValueState] = React.useState(item.value ?? '');
   const [applying, setIsApplying] = React.useState(false);
   const id = useId();
   const singleSelectProps: TextFieldProps =
@@ -61,8 +61,14 @@ function GridFilterInputValue(props: GridTypeFilterInputValueProps & TextFieldPr
 
       clearTimeout(filterTimeout.current);
       setFilterValueState(String(value));
+
+      if (type !== 'singleSelect' && value === '') {
+        setIsApplying(false);
+        return;
+      }
+
       setIsApplying(true);
-      // TODO singleSelect doesn't a debounce
+      // TODO singleSelect doesn't debounce
       filterTimeout.current = setTimeout(() => {
         applyValue({ ...item, value });
         setIsApplying(false);
@@ -78,7 +84,8 @@ function GridFilterInputValue(props: GridTypeFilterInputValueProps & TextFieldPr
   }, []);
 
   React.useEffect(() => {
-    setFilterValueState(String(item.value) || '');
+    const itemValue = item.value ?? '';
+    setFilterValueState(String(itemValue));
   }, [item.value]);
 
   const InputProps = applying ? { endAdornment: <GridLoadIcon /> } : others.InputProps;

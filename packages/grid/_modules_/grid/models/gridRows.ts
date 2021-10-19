@@ -12,6 +12,22 @@ export interface GridRowModelUpdate extends GridRowData {
   _action?: GridUpdateAction;
 }
 
+export interface GridRowTreeNodeConfig {
+  id: GridRowId;
+  children?: GridRowTreeConfig;
+  descendantsCount?: number;
+  expanded?: boolean;
+
+  /**
+   * If `true`, this node has been automatically added to fill a gap in the tree structure
+   */
+  fillerNode?: boolean;
+}
+
+export type GridRowTreeConfig = Map<string, GridRowTreeNodeConfig>;
+
+export type GridRowsLookup = Record<GridRowId, GridRowModel>;
+
 /**
  * The type of Id supported by the grid.
  */
@@ -37,7 +53,7 @@ export function checkGridRowIdIsValid(
   if (id == null) {
     throw new Error(
       [
-        'Material-UI: The data grid component requires all rows to have a unique id property.',
+        'MUI: The data grid component requires all rows to have a unique id property.',
         detailErrorMessage,
         JSON.stringify(row),
       ].join('\n'),
