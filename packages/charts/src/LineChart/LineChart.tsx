@@ -9,11 +9,6 @@ import useThrottle from '../hooks/useThrottle';
 import useTicks from '../hooks/useTicks';
 import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
-interface ChartData<X, Y> {
-  x: X;
-  y: Y;
-}
-
 interface Margin {
   bottom?: number;
   left?: number;
@@ -32,7 +27,9 @@ type MarkerShape =
   | 'wye'
   | 'none';
 
-export interface LineChartProps<X = unknown, Y = unknown> {
+type Scale = 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
+
+export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   /**
    * The keys to use when stacking the data.
    */
@@ -44,7 +41,7 @@ export interface LineChartProps<X = unknown, Y = unknown> {
   /**
    * The data to use for the chart.
    */
-  data: ChartData<X, Y>[] | ChartData<X, Y>[][];
+  data: Record[] | Record[][];
   /**
    * The fill color to use for the area.
    */
@@ -113,38 +110,37 @@ export interface LineChartProps<X = unknown, Y = unknown> {
   /**
    * Override the calculated domain of the x axis.
    */
-  xDomain?: X[];
+  xDomain?: [X] | [X, X];
   /**
-   * The key to use for the x axis.
+   * The key to use for the x axis or the function to access .
    */
-
-  xKey?: string;
+  xValueSelector?: keyof Record | ((r: Record) => X);
   /**
    * The scale type to use for the x axis.
    */
-  xScaleType?: 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
+  xScaleType?: Scale;
   /**
    * Override the calculated domain of the y axis.
    * By default, the domain starts at zero. Set the value to null to calculate the true domain.
    */
-  yDomain?: Y[];
+  yDomain?: [Y] | [Y, Y];
   /**
    * The key to use for the y axis.
    */
-  yKey?: string;
+  yValueSelector?: keyof Record | ((r: Record) => Y);
   /**
    * The scale type to use for the y axis.
    */
-  yScaleType?: 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
+  yScaleType?: Scale;
 }
 
 type LineChartComponent = <X, Y>(
   props: LineChartProps<X, Y> & React.RefAttributes<SVGSVGElement>,
 ) => JSX.Element;
 
-const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
-  props: LineChartProps<X, Y>,
-  ref: React.Ref<SVGSVGElement>,
+const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unknown, Y = unknown>(
+  props: LineChartProps<Record, X, Y>,
+  ref: React.ForwardedRef<SVGSVGElement>,
 ) {
   const {
     keys,
@@ -166,10 +162,10 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     smoothed = false,
     stacked = false,
     xDomain: xDomainProp,
-    xKey = 'x',
+    xValueSelector,
     xScaleType = 'linear',
     yDomain: yDomainProp = [0],
-    yKey = 'y',
+    yValueSelector,
     yScaleType = 'linear',
     ...other
   } = props;
@@ -211,8 +207,26 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     marginBottom,
   } = dimensions;
 
-  const xDomain = getExtent(data, (d) => d[xKey], xDomainProp);
-  const yDomain = getExtent(data, (d) => d[yKey], yDomainProp);
+  let xGetter: (record: Record) => X;
+  if (typeof xValueSelector === 'string') {
+    xGetter = (record: Record) => record[xValueSelector as keyof Record] as unknown as X;
+  } else if (typeof xValueSelector === 'function') {
+    xGetter = xValueSelector;
+  } else {
+    xGetter = (record: Record) => (record as any).x as X;
+  }
+
+  let yGetter: (record: Record) => Y;
+  if (typeof yValueSelector === 'string') {
+    yGetter = (record: Record) => record[yValueSelector as keyof Record] as unknown as Y;
+  } else if (typeof yValueSelector === 'function') {
+    yGetter = yValueSelector;
+  } else {
+    yGetter = (record: Record) => (record as any).y as Y;
+  }
+
+  const xDomain = getExtent(data, (d: Record) => xGetter(d), xDomainProp);
+  const yDomain = getExtent(data, (d: Record) => yGetter(d), yDomainProp);
   const xRange = [0, boundedWidth];
   const yRange = [0, boundedHeight];
   const maxXTicks = getMaxDataSetLength(data) - 1;
@@ -268,11 +282,11 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
         stacked,
         mousePosition,
         smoothed,
-        xKey,
+        xValueSelector: xGetter,
         xScale,
         xScaleType,
         xTicks,
-        yKey,
+        yValueSelector: yGetter,
         yScale,
         yScaleType,
         yTicks,
