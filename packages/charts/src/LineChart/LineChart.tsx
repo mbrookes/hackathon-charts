@@ -9,6 +9,11 @@ import useThrottle from '../hooks/useThrottle';
 import useTicks from '../hooks/useTicks';
 import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
+interface ChartData<X, Y> {
+  x: X;
+  y: Y;
+}
+
 interface Margin {
   bottom?: number;
   left?: number;
@@ -27,9 +32,7 @@ type MarkerShape =
   | 'wye'
   | 'none';
 
-type Scale = 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
-
-export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
+export interface LineChartProps<X = unknown, Y = unknown> {
   /**
    * The content of the component.
    */
@@ -37,7 +40,7 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   /**
    * The data to use for the chart.
    */
-  data: Record[] | Record[][];
+  data: ChartData<X, Y>[] | ChartData<X, Y>[][];
   /**
    * The fill color to use for the area.
    * @default 'none'
@@ -118,40 +121,41 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   /**
    * Override the calculated domain of the x axis.
    */
-  xDomain?: [X] | [X, X];
+  xDomain?: X[];
   /**
-   * The key to use for the x axis or the function to access .
+   * The key to use for the x axis.
    */
-  xValueSelector?: keyof Record | ((r: Record) => X);
+
+  xKey?: string;
   /**
    * The scale type to use for the x axis.
    * @default 'linear'
    */
-  xScaleType?: Scale;
+  xScaleType?: 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
   /**
    * Override the calculated domain of the y axis.
    * By default, the domain starts at zero. Set the value to null to calculate the true domain.
    * @default [0]
    */
-  yDomain?: [Y] | [Y, Y];
+  yDomain?: Y[];
   /**
    * The key to use for the y axis.
    */
-  yValueSelector?: keyof Record | ((r: Record) => Y);
+  yKey?: string;
   /**
    * The scale type to use for the y axis.
    * @default 'linear'
    */
-  yScaleType?: Scale;
+  yScaleType?: 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
 }
 
 type LineChartComponent = <X, Y>(
   props: LineChartProps<X, Y> & React.RefAttributes<SVGSVGElement>,
 ) => JSX.Element;
 
-const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unknown, Y = unknown>(
-  props: LineChartProps<Record, X, Y>,
-  ref: React.ForwardedRef<SVGSVGElement>,
+const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
+  props: LineChartProps<X, Y>,
+  ref: React.Ref<SVGSVGElement>,
 ) {
   const {
     children,
@@ -173,10 +177,10 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
     smoothed = false,
     stacked = false,
     xDomain: xDomainProp,
-    xValueSelector,
+    xKey = 'x',
     xScaleType = 'linear',
     yDomain: yDomainProp = [0],
-    yValueSelector,
+    yKey = 'y',
     yScaleType = 'linear',
     ...other
   } = props;
@@ -218,26 +222,8 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
     marginBottom,
   } = dimensions;
 
-  let xGetter: (record: Record) => X;
-  if (typeof xValueSelector === 'string') {
-    xGetter = (record: Record) => (record[xValueSelector as keyof Record] as unknown) as X;
-  } else if (typeof xValueSelector === 'function') {
-    xGetter = xValueSelector;
-  } else {
-    xGetter = (record: Record) => (record as any).x as X;
-  }
-
-  let yGetter: (record: Record) => Y;
-  if (typeof yValueSelector === 'string') {
-    yGetter = (record: Record) => (record[yValueSelector as keyof Record] as unknown) as Y;
-  } else if (typeof yValueSelector === 'function') {
-    yGetter = yValueSelector;
-  } else {
-    yGetter = (record: Record) => (record as any).y as Y;
-  }
-
-  const xDomain = getExtent(data, (d: Record) => xGetter(d), xDomainProp);
-  const yDomain = getExtent(data, (d: Record) => yGetter(d), yDomainProp);
+  const xDomain = getExtent(data, (d) => d[xKey], xDomainProp);
+  const yDomain = getExtent(data, (d) => d[yKey], yDomainProp);
   const xRange = [0, boundedWidth];
   const yRange = [0, boundedHeight];
   const maxXTicks = getMaxDataSetLength(data) - 1;
@@ -293,11 +279,11 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
         stacked,
         mousePosition,
         smoothed,
-        xValueSelector: xGetter,
+        xKey,
         xScale,
         xScaleType,
         xTicks,
-        yValueSelector: yGetter,
+        yKey,
         yScale,
         yScaleType,
         yTicks,

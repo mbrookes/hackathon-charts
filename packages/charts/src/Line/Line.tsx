@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
 import Scatter from '../Scatter/Scatter';
 
-function points(data, xValueSelector) {
-  return data.map((d) => ({ x: xValueSelector(d.data), y: d[1] }));
+function points(data, xKey) {
+  return data.map((d) => ({ [xKey]: d.data[xKey], y: d[1] }));
 }
 
 const Line = (props) => {
@@ -19,9 +19,9 @@ const Line = (props) => {
     markerShape: markerShapeContext,
     smoothed: smoothedContext,
     stacked,
-    xValueSelector,
+    xKey,
     xScale,
-    yValueSelector,
+    yKey,
     yScale,
   } = useContext(ChartContext) as any;
 
@@ -55,27 +55,27 @@ const Line = (props) => {
     linePath = d3
       .line()
       // @ts-ignore TODO: Fix me
-      .x((d) => xScale(xValueSelector(d.data)))
+      .x((d) => xScale(d.data[xKey]))
       .y((d) => -yScale(d[1]));
 
     areaPath = d3
       .area()
       // @ts-ignore TODO: Fix me
-      .x((d) => xScale(xValueSelector(d.data)))
+      .x((d) => xScale(d.data[xKey]))
       .y0((d) => -yScale(d[0]))
       .y1((d) => -yScale(d[1]));
 
-    pointData = points(chartData, xValueSelector);
+    pointData = points(chartData, xKey);
   } else {
     linePath = d3
       .line()
-      .x((d) => xScale(xValueSelector(d)))
-      .y((d) => -yScale(yValueSelector(d)));
+      .x((d) => xScale(d[xKey]))
+      .y((d) => -yScale(d[yKey]));
 
     areaPath = d3
       .area()
-      .x((d) => xScale(xValueSelector(d)))
-      .y1((d) => -yScale(yValueSelector(d)))
+      .x((d) => xScale(d[xKey]))
+      .y1((d) => -yScale(d[yKey]))
       .y0(-yScale(yScale.domain()[0]));
   }
 
