@@ -6,14 +6,17 @@ import { getSymbol } from '../utils';
 export interface LegendProps {
   /**
    * The color of the label.
+   * @default '#777'
    */
   labelColor: string;
   /**
    * The font size of the label.
+   * @default 12
    */
   labelFontSize: number;
   /**
    * The size of the markers in the legend.
+   * @default 30
    */
   markerSize: number;
   /**
@@ -41,8 +44,8 @@ const Legend = React.forwardRef(function Grid(props: LegendProps, ref: React.Ref
     labelColor = '#777',
     labelFontSize = 12,
     markerSize = 30,
-    spacing = 50,
     position = 'top',
+    spacing = 50,
   } = props;
 
   return (
