@@ -4,26 +4,32 @@ import ChartContext from '../ChartContext';
 export interface GridProps {
   /**
    * Disable the x axis grid lines.
+   * @default false
    */
   disableX: boolean;
   /**
-   * Disable the y axis grid lines
+   * Disable the y axis grid lines.
+   * @default false
    */
   disableY: boolean;
   /**
    * The fill color of the grid.
+   *  @default 'none'
    */
   fill: string;
   /**
    * The stroke color of the grid.
+   *  @default 'rgba(200, 200, 200, 0.5)'
    */
   stroke: string;
   /**
    * The stroke dash array of the grid.
+   * @default '0'
    */
   strokeDasharray: string;
   /**
    * The stroke width of the grid.
+   * @default '1'
    */
   strokeWidth: number;
   /**
