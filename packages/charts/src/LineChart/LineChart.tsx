@@ -209,7 +209,7 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
 
   let xGetter: (record: Record) => X;
   if (typeof xValueSelector === 'string') {
-    xGetter = (record: Record) => record[xValueSelector as keyof Record] as unknown as X;
+    xGetter = (record: Record) => (record[xValueSelector as keyof Record] as unknown) as X;
   } else if (typeof xValueSelector === 'function') {
     xGetter = xValueSelector;
   } else {
@@ -218,7 +218,7 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
 
   let yGetter: (record: Record) => Y;
   if (typeof yValueSelector === 'string') {
-    yGetter = (record: Record) => record[yValueSelector as keyof Record] as unknown as Y;
+    yGetter = (record: Record) => (record[yValueSelector as keyof Record] as unknown) as Y;
   } else if (typeof yValueSelector === 'function') {
     yGetter = yValueSelector;
   } else {
@@ -265,7 +265,7 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
   };
 
   const chartId = useId(idProp);
-  const chartHeight = heightProp || (width * ratio);
+  const chartHeight = heightProp || width * ratio;
   return (
     <ChartContext.Provider
       value={{

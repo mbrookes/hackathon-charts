@@ -207,7 +207,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
       y: -1,
     });
   };
-  const chartHeight = heightProp || (width * ratio);
+  const chartHeight = heightProp || width * ratio;
 
   return (
     <ChartContext.Provider

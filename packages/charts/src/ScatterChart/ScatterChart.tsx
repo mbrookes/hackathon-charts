@@ -191,7 +191,7 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
     tickSpacing,
     maxTicks: 999,
   });
-  const chartHeight = heightProp || (width * ratio);
+  const chartHeight = heightProp || width * ratio;
 
   return (
     <ChartContext.Provider
