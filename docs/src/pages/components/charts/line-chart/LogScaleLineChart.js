@@ -26,7 +26,7 @@ export default function LogScaleLineChart() {
       yDomain={null}
     >
       <Grid />
-      <Tooltip customStyle={{ borderRadius: 15 }} />
+      <Tooltip />
       <XAxis />
       <YAxis suffix="kg" />
       <Line stroke="rgb(116,205,240)" />

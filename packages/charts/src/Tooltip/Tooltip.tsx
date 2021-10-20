@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import NoSsr from '@mui/core/NoSsr';
 import Paper from '@mui/material/Paper';
@@ -17,7 +16,42 @@ function getSymbol(shape, series = 0) {
   return symbolNames.indexOf(shape) || 0;
 }
 
-const Tooltip = (props) => {
+export interface TooltipProps {
+  /**
+   * The size of the tooltip markers.
+   * @default 30
+   */
+  markerSize: number;
+  /**
+   * The content that can be rendered to replace the component.
+   *
+   * @param {array} highlightedData Contains the data for multiple series that are currently highlighted.
+   * @returns {React.ReactNode} The content to be rendered.
+   */
+  renderContent: (highlightedData: any) => React.ReactNode;
+  /**
+   * The stroke color of the marker line.
+   * @default 'rgba(200, 200, 200, 0.8)'
+   */
+  stroke: string;
+  /**
+   * The stroke pattern of the marker line.
+   * @default 'none'
+   */
+  strokeDasharray: string;
+  /**
+   * The stroke width of the marker line.
+   * @default 1
+   */
+  strokeWidth: number;
+}
+
+type TooltipComponent = (props: TooltipProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const Tooltip = React.forwardRef(function Grid(
+  props: TooltipProps,
+  ref: React.Ref<HTMLDivElement>,
+) {
   const {
     data,
     dimensions: { boundedHeight },
@@ -31,9 +65,8 @@ const Tooltip = (props) => {
 
   const {
     stroke = 'rgba(200, 200, 200, 0.8)',
-    strokeDasharray = '0',
+    strokeDasharray = 'none',
     strokeWidth = 1,
-    customStyle = {},
     markerSize = 30,
     renderContent = null,
   } = props;
@@ -100,9 +133,10 @@ const Tooltip = (props) => {
             placement="right-start"
             anchorEl={strokeElement}
             style={{ padding: '16px', pointerEvents: 'none' }}
+            ref={ref}
           >
             {!renderContent && (
-              <Paper style={{ padding: '16px', ...customStyle }}>
+              <Paper style={{ padding: '16px' }}>
                 <Typography gutterBottom align="center">
                   {label && label.value}
                 </Typography>
@@ -153,36 +187,6 @@ const Tooltip = (props) => {
       </NoSsr>
     </React.Fragment>
   );
-};
-
-Tooltip.propTypes /* remove-proptypes */ = {
-  /**
-   * The style of the tooltip box.
-   */
-  customStyle: PropTypes.object,
-  /**
-   * The size of the tooltip markers.
-   * @default 30
-   */
-  markerSize: PropTypes.number,
-  /**
-   * The content that can be rendered to replace the component.
-   *
-   * @param {array} highlightedData Contains the data for multiple series that are currently highllighted.
-   */
-  renderContent: PropTypes.func,
-  /**
-   * The stroke color of the marker line.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The stroke pattern of the marker line.
-   */
-  strokeDasharray: PropTypes.string,
-  /**
-   * The stroke width of the marker line.
-   */
-  strokeWidth: PropTypes.number,
-};
+}) as TooltipComponent;
 
 export default Tooltip;
