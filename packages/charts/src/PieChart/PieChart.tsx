@@ -203,7 +203,7 @@ const PieChart = React.forwardRef<SVGSVGElement, PieChartProps>(function PieChar
         const percentInterpolate = d3.interpolate(0, 100);
         return (t) => setPercentVisible(percentInterpolate(t));
       });
-  }, [data]);
+  }, [chartRef, data]);
 
   const radius = radiusProp || Math.min(boundedWidth, boundedHeight) / 2;
   const innerRadius = (radius * innerRadiusPercent) / 100;
