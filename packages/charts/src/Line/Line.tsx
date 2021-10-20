@@ -43,6 +43,7 @@ export interface LineProps {
   smoothed: boolean;
   /**
    * The stroke color of the marker line.
+   * @default 'currentColor'
    */
   stroke: string;
   /**
@@ -51,6 +52,7 @@ export interface LineProps {
   strokeDasharray: string;
   /**
    * The stroke width of the marker line.
+   * @default 1
    */
   strokeWidth: number;
 }
