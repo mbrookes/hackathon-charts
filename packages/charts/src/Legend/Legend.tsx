@@ -1,10 +1,36 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
 import { getSymbol } from '../utils';
 
-function Legend(props) {
+export interface LegendProps {
+  /**
+   * The color of the label.
+   */
+  labelColor: string;
+  /**
+   * The font size of the label.
+   */
+  labelFontSize: number;
+  /**
+   * The size of the markers in the legend.
+   */
+  markerSize: number;
+  /**
+   * The position of the legend in the chart.
+   * @default 'top'
+   */
+  position: 'top' | 'bottom';
+  /**
+   * The spacing between the legend items.
+   * @default 50
+   */
+  spacing: number;
+}
+
+type LegendComponent = (props: LegendProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const Legend = React.forwardRef(function Grid(props: LegendProps, ref: React.Ref<SVGSVGElement>) {
   const {
     dimensions: { boundedHeight, boundedWidth },
     invertMarkers,
@@ -25,6 +51,7 @@ function Legend(props) {
         position === 'top' ? 0 : boundedHeight + 68
       })`}
       style={{ pointerEvents: 'none' }}
+      ref={ref}
     >
       {seriesMeta &&
         Object.keys(seriesMeta).map((series) => {
@@ -64,31 +91,6 @@ function Legend(props) {
         })}
     </g>
   );
-}
-
-Legend.propTypes /* remove-proptypes */ = {
-  /**
-   * The color of the label.
-   */
-  labelColor: PropTypes.string,
-  /**
-   * The font size of the label.
-   */
-  labelFontSize: PropTypes.number,
-  /**
-   * The size of the markers in the legend.
-   */
-  markerSize: PropTypes.number,
-  /**
-   * The position of the legend in the chart.
-   * @default 'top'
-   */
-  position: PropTypes.oneOf(['top', 'bottom']),
-  /**
-   * The spacing between the legend items.
-   * @default 50
-   */
-  spacing: PropTypes.number,
-};
+}) as LegendComponent;
 
 export default Legend;
