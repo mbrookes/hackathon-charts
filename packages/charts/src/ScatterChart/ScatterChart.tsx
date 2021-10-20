@@ -29,6 +29,7 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
   data: ChartData<X, Y>[] | ChartData<X, Y>[][];
   /**
    * The fill color to use for the chart area.
+   * @default 'none'
    */
   fill?: string;
   /**
@@ -41,6 +42,7 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
   highlightMarkers?: boolean;
   /**
    * Invert the line and fill colors of the point markers.
+   * @default false
    */
   invertMarkers?: boolean;
   /**
@@ -65,6 +67,7 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
   /**
    * The shape of the markers.
    * If auto, the shape will be based on the data series.
+   * @default 'circle'
    */
   markerShape?:
     | 'auto'
@@ -76,10 +79,6 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
     | 'triangle'
     | 'wye'
     | 'none';
-  /**
-   * The size of the markers.
-   */
-  markerSize?: number;
   /**
    * The ratio of the height to the width of the chart.
    * @default 0.5
