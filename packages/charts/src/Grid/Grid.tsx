@@ -1,8 +1,48 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import ChartContext from '../ChartContext';
 
-const Grid = (props) => {
+export interface GridProps {
+  /**
+   * Disable the x axis grid lines.
+   */
+  disableX: boolean;
+  /**
+   * Disable the y axis grid lines
+   */
+  disableY: boolean;
+  /**
+   * The fill color of the grid.
+   */
+  fill: string;
+  /**
+   * The stroke color of the grid.
+   */
+  stroke: string;
+  /**
+   * The stroke dash array of the grid.
+   */
+  strokeDasharray: string;
+  /**
+   * The stroke width of the grid.
+   */
+  strokeWidth: number;
+  /**
+   * The stroke color of the zero grid line.
+   */
+  zeroStroke: string;
+  /**
+   * The stroke dash array of the zero grid line.
+   */
+  zeroStrokeDasharray: string;
+  /**
+   * The stroke width of the zero grid line.
+   */
+  zeroStrokeWidth: number;
+}
+
+type GridComponent = (props: GridProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const Grid = React.forwardRef(function Grid(props: GridProps, ref: React.Ref<SVGSVGElement>) {
   const {
     dimensions: { boundedWidth, boundedHeight },
     xTicks,
@@ -27,7 +67,7 @@ const Grid = (props) => {
     zeroStrokeDasharrayProp && value === '0' ? zeroStrokeDasharrayProp : strokeDasharray;
 
   return (
-    <g>
+    <g ref={ref}>
       <rect width={boundedWidth} height={boundedHeight} fill={fill} />
       <g transform={`translate(0, ${boundedHeight})`}>
         {!disableX &&
@@ -59,45 +99,6 @@ const Grid = (props) => {
       </g>
     </g>
   );
-};
-
-Grid.propTypes = {
-  /**
-   * Disable the x axis grid lines.
-   */
-  disableX: PropTypes.bool,
-  /**
-   * Disable the y axis grid lines
-   */
-  disableY: PropTypes.bool,
-  /**
-   * The fill color of the grid.
-   */
-  fill: PropTypes.string,
-  /**
-   * The stroke color of the grid.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The stroke dash array of the grid.
-   */
-  strokeDasharray: PropTypes.string,
-  /**
-   * The stroke width of the grid.
-   */
-  strokeWidth: PropTypes.number,
-  /**
-   * The stroke color of the zero grid line.
-   */
-  zeroStroke: PropTypes.string,
-  /**
-   * The stroke dash array of the zero grid line.
-   */
-  zeroStrokeDasharray: PropTypes.string,
-  /**
-   * The stroke width of the zero grid line.
-   */
-  zeroStrokeWidth: PropTypes.number,
-};
+}) as GridComponent;
 
 export default Grid;
