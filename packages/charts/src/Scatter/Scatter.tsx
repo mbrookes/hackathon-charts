@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
 import { getSymbol, isInRange } from '../utils';
@@ -8,7 +7,67 @@ const plot = (value, domain, size) => {
   return ((value - domain[0]) / (domain[1] - domain[0])) * size;
 };
 
-const Scatter = (props) => {
+export interface ScatterProps {
+  /**
+   * The data to be plotted. Either an array of objects, or nested arrays of objects.
+   */
+  data: any[];
+  /**
+   * The fill color of the markers.
+   */
+  fill: string;
+  /**
+   * If `true`, the marker fill and stroke will be inverted.
+   */
+
+  invertMarkers: boolean;
+  /**
+   * The shape of the markers.
+   */
+  markerShape:
+    | 'auto'
+    | 'circle'
+    | 'cross'
+    | 'diamond'
+    | 'square'
+    | 'star'
+    | 'triangle'
+    | 'wye'
+    | 'none';
+  /**
+   * The maximum size of the markers.
+   * @default 500
+   */
+  maxSize: number;
+  /**
+   * The minimum size of the markers.
+   */
+  minSize: number;
+  /**
+   * For nested arrays, the series to be plotted.
+   */
+  series: number;
+  /**
+   * The stroke color of the marker line.
+   */
+  stroke: string;
+  /**
+   * The stroke pattern of the marker.
+   */
+  strokeDasharray: string;
+  /**
+   * The stroke width of the marker.
+   */
+  strokeWidth: number;
+  xKey: string;
+  yKey: string;
+  zDomain: [number, number];
+  zKey: string;
+}
+
+type ScatterComponent = (props: ScatterProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const Scatter = React.forwardRef(function Grid(props: ScatterProps, ref: React.Ref<SVGSVGElement>) {
   const {
     data,
     dimensions: { boundedHeight },
@@ -56,7 +115,7 @@ const Scatter = (props) => {
   };
 
   return (
-    <g>
+    <g ref={ref}>
       {chartData.map(
         // @ts-ignore TODO: Fix me
         ({ [xKey]: x, [yKey]: y, [zKey]: z }, i) =>
@@ -87,64 +146,6 @@ const Scatter = (props) => {
       )}
     </g>
   );
-};
-
-Scatter.propTypes /* remove-proptypes */ = {
-  /**
-   * The data to be plotted. Either an array of objects, or nested arrays of objects.
-   */
-  data: PropTypes.array,
-  /**
-   * The fill color of the markers.
-   */
-  fill: PropTypes.string,
-  /**
-   * If `true`, the marker fill and stroke will be inverted.
-   */
-
-  invertMarkers: PropTypes.bool,
-  /**
-   * The shape of the markers.
-   */
-  markerShape: PropTypes.oneOf([
-    'auto',
-    'circle',
-    'cross',
-    'diamond',
-    'square',
-    'star',
-    'triangle',
-    'wye',
-    'none',
-  ]),
-  /**
-   * The maximum size of the markers.
-   */
-  maxSize: PropTypes.number,
-  /**
-   * The minimum size of the markers.
-   */
-  minSize: PropTypes.number,
-  /**
-   * For nested arrays, the series to be plotted.
-   */
-  series: PropTypes.number,
-  /**
-   * The stroke color of the marker line.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The stroke pattern of the marker.
-   */
-  strokeDasharray: PropTypes.string,
-  /**
-   * The stroke width of the marker.
-   */
-  strokeWidth: PropTypes.number,
-  xKey: PropTypes.string,
-  yKey: PropTypes.string,
-  zDomain: PropTypes.arrayOf(PropTypes.number),
-  zKey: PropTypes.string,
-};
+}) as ScatterComponent;
 
 export default Scatter;
