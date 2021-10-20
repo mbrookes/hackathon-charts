@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
 import Scatter from '../Scatter/Scatter';
@@ -8,7 +7,57 @@ function points(data, xKey) {
   return data.map((d) => ({ [xKey]: d.data[xKey], y: d[1] }));
 }
 
-const Line = (props) => {
+export interface LineProps {
+  /**
+   * The data to be plotted. Either an array of objects, or nested arrays of objects.
+   */
+  data: any[];
+  /**
+   * The color of the area under the line.
+   */
+  fill: string;
+  /**
+   * The label for the line to be used in the tooltip and line.
+   */
+  label: string;
+  /**
+   * The shape of the markers.
+   */
+  markerShape:
+    | 'auto'
+    | 'circle'
+    | 'cross'
+    | 'diamond'
+    | 'square'
+    | 'star'
+    | 'triangle'
+    | 'wye'
+    | 'none';
+  /**
+   * The index of the series to be plotted.
+   */
+  series: number;
+  /**
+   * If true, the line will be smoothed.
+   */
+  smoothed: boolean;
+  /**
+   * The stroke color of the marker line.
+   */
+  stroke: string;
+  /**
+   * The stroke pattern of the marker line.
+   */
+  strokeDasharray: string;
+  /**
+   * The stroke width of the marker line.
+   */
+  strokeWidth: number;
+}
+
+type LineComponent = (props: LineProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const Line = React.forwardRef(function Grid(props: LineProps, ref: React.Ref<SVGSVGElement>) {
   const {
     keys,
     chartId,
@@ -86,7 +135,7 @@ const Line = (props) => {
   }
 
   return (
-    <g>
+    <g ref={ref}>
       <g clipPath={`url(#${chartId}-clipPath)`}>
         {fill && (
           <path
@@ -123,55 +172,6 @@ const Line = (props) => {
       )}
     </g>
   );
-};
-
-Line.propTypes /* remove-proptypes */ = {
-  /**
-   * The data to be plotted. Either an array of objects, or nested arrays of objects.
-   */
-  data: PropTypes.array,
-  /**
-   * The color of the area under the line.
-   */
-  fill: PropTypes.string,
-  /**
-   * The label for the line to be used in the tooltip and legend.
-   */
-  label: PropTypes.string,
-  /**
-   * The shape of the markers.
-   */
-  markerShape: PropTypes.oneOf([
-    'auto',
-    'circle',
-    'cross',
-    'diamond',
-    'square',
-    'star',
-    'triangle',
-    'wye',
-    'none',
-  ]),
-  /**
-   * The index of the series to be plotted.
-   */
-  series: PropTypes.number,
-  /**
-   * If true, the line will be smoothed.
-   */
-  smoothed: PropTypes.bool,
-  /**
-   * The stroke color of the marker line.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The stroke pattern of the marker line.
-   */
-  strokeDasharray: PropTypes.string,
-  /**
-   * The stroke width of the marker line.
-   */
-  strokeWidth: PropTypes.number,
-};
+}) as LineComponent;
 
 export default Line;
