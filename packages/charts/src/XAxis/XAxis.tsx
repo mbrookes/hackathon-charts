@@ -4,18 +4,22 @@ import ChartContext from '../ChartContext';
 export interface XAxisProps {
   /**
    * If true, the axia line is disabled.
+   * @default false
    */
   disableLine: boolean;
   /**
    * If true, the ticks are disabled.
+   * @default false
    */
   disableTicks: boolean;
   /**
    * The fill color of the axis text.
+   * @default 'currentColor'
    */
   fill: string;
   /**
    * The font size of the axis text.
+   * @default 12
    */
   fontSize: number;
   /**
@@ -24,14 +28,17 @@ export interface XAxisProps {
   label: string;
   /**
    * The font size of the axis label.
+   * @default 14
    */
   labelFontSize: number;
   /**
    * The stroke color of the axis line.
+   * @default 'currentColor'
    */
   stroke: string;
   /**
    * The size of the ticks.
+   * @default 6
    */
   tickSize: number;
 }
