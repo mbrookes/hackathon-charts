@@ -1,8 +1,51 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import ChartContext from '../ChartContext';
 
-const YAxis = (props) => {
+export interface YAxisProps {
+  /**
+   * If true, the axia line is disabled.
+   * @default false
+   */
+  disableLine: boolean;
+  /**
+   * If true, the ticks are disabled.
+   * @default false
+   */
+  disableTicks: boolean;
+  /**
+   * The fill color of the axis text.
+   * @default 'currentColor'
+   */
+  fill: string;
+  /**
+   * The font size of the axis text.
+   * @default 12
+   */
+  fontSize: number;
+  /**
+   * The label of the axis.
+   */
+  label: string;
+  /**
+   * The font size of the axis label.
+   * @default 14
+   */
+  labelFontSize: number;
+  /**
+   * The stroke color of the axis line.
+   * @default 'currentColor'
+   */
+  stroke: string;
+  /**
+   * The size of the ticks.
+   * @default 6
+   */
+  tickSize: number;
+}
+
+type YAxisComponent = (props: YAxisProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const YAxis = React.forwardRef(function Grid(props: YAxisProps, ref: React.Ref<SVGSVGElement>) {
   const {
     dimensions: { boundedHeight },
     yTicks,
@@ -21,7 +64,7 @@ const YAxis = (props) => {
   const tickSize = disableTicks ? 4 : tickSizeProp;
 
   return (
-    <g transform={`translate(0, ${boundedHeight})`}>
+    <g transform={`translate(0, ${boundedHeight})`} ref={ref}>
       {!disableLine && <line y2={-boundedHeight} stroke={stroke} shapeRendering="crispEdges" />}
       {yTicks.map(({ value, offset }, index) => (
         <g key={index} transform={`translate(0, ${-offset})`}>
@@ -48,41 +91,6 @@ const YAxis = (props) => {
       )}
     </g>
   );
-};
-
-YAxis.propTypes /* remove-proptypes */ = {
-  /**
-   * If true, the axia line is disabled.
-   */
-  disableLine: PropTypes.bool,
-  /**
-   * If true, the ticks are disabled.
-   */
-  disableTicks: PropTypes.bool,
-  /**
-   * The fill color of the axis text.
-   */
-  fill: PropTypes.string,
-  /**
-   * The font size of the axis text.
-   */
-  fontSize: PropTypes.number,
-  /**
-   * The label of the axis.
-   */
-  label: PropTypes.string,
-  /**
-   * The font size of the axis label.
-   */
-  labelFontSize: PropTypes.number,
-  /**
-   * The stroke color of the axis line.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The size of the ticks.
-   */
-  tickSize: PropTypes.number,
-};
+}) as YAxisComponent;
 
 export default YAxis;
