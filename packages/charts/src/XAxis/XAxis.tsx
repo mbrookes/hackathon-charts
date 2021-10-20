@@ -1,8 +1,44 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import ChartContext from '../ChartContext';
 
-const XAxis = (props) => {
+export interface XAxisProps {
+  /**
+   * If true, the axia line is disabled.
+   */
+  disableLine: boolean;
+  /**
+   * If true, the ticks are disabled.
+   */
+  disableTicks: boolean;
+  /**
+   * The fill color of the axis text.
+   */
+  fill: string;
+  /**
+   * The font size of the axis text.
+   */
+  fontSize: number;
+  /**
+   * The label of the axis.
+   */
+  label: string;
+  /**
+   * The font size of the axis label.
+   */
+  labelFontSize: number;
+  /**
+   * The stroke color of the axis line.
+   */
+  stroke: string;
+  /**
+   * The size of the ticks.
+   */
+  tickSize: number;
+}
+
+type XAxisComponent = (props: XAxisProps & React.RefAttributes<SVGSVGElement>) => JSX.Element;
+
+const XAxis = React.forwardRef(function Grid(props: XAxisProps, ref: React.Ref<SVGSVGElement>) {
   const {
     dimensions: { boundedHeight, boundedWidth },
     xTicks,
@@ -21,7 +57,7 @@ const XAxis = (props) => {
   const tickSize = disableTicks ? 4 : tickSizeProp;
 
   return (
-    <g transform={`translate(0, ${boundedHeight})`}>
+    <g transform={`translate(0, ${boundedHeight})`} ref={ref}>
       {!disableLine && <line x2={boundedWidth} stroke={stroke} shapeRendering="crispEdges" />}
       {xTicks.map(({ value, offset }, index) => (
         <g key={index} transform={`translate(${offset}, 0)`}>
@@ -48,41 +84,6 @@ const XAxis = (props) => {
       )}
     </g>
   );
-};
-
-XAxis.propTypes /* remove-proptypes */ = {
-  /**
-   * If true, the axia line is disabled.
-   */
-  disableLine: PropTypes.bool,
-  /**
-   * If true, the ticks are disabled.
-   */
-  disableTicks: PropTypes.bool,
-  /**
-   * The fill color of the axis text.
-   */
-  fill: PropTypes.string,
-  /**
-   * The font size of the axis text.
-   */
-  fontSize: PropTypes.number,
-  /**
-   * The label of the axis.
-   */
-  label: PropTypes.string,
-  /**
-   * The font size of the axis label.
-   */
-  labelFontSize: PropTypes.number,
-  /**
-   * The stroke color of the axis line.
-   */
-  stroke: PropTypes.string,
-  /**
-   * The size of the ticks.
-   */
-  tickSize: PropTypes.number,
-};
+}) as XAxisComponent;
 
 export default XAxis;
