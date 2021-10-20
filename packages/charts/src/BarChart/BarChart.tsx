@@ -31,7 +31,8 @@ export interface BarChartProps<X = unknown, Y = unknown> {
    */
   data: ChartData<X, Y>[] | ChartData<X, Y>[][];
   /**
-   * The fill color to use for the bar.
+   * The fill color to use for the chart.
+   * @default 'none'
    */
   fill?: string;
   /**
@@ -59,6 +60,7 @@ export interface BarChartProps<X = unknown, Y = unknown> {
   /**
    * The margin to use.
    * Labels and axes fall within these margins.
+   * @default { top: 40, bottom: 40, left: 50, right: 30 }
    */
   margin?: Margin;
   /**

@@ -87,6 +87,7 @@ export interface PieChartProps {
   labelFontSize?: number;
   /**
    * The margin to use around the chart.
+   * @default { top: 10, right: 10, bottom: 10, left: 10 }
    */
   margin?: Margin;
   /**

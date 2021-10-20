@@ -38,6 +38,7 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
   height?: number;
   /**
    * If true, the markers will be highlighted when the mouse is over them.
+   * @default false
    */
   highlightMarkers?: boolean;
   /**
@@ -62,6 +63,7 @@ export interface ScatterChartProps<X = unknown, Y = unknown> {
   /**
    * The margin to use.
    * Labels and axes fall within these margins.
+   * @default { top: 40, bottom: 40, left: 50, right: 30 }
    */
   margin?: Margin;
   /**

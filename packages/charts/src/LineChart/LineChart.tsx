@@ -85,6 +85,7 @@ export interface LineChartProps<X = unknown, Y = unknown> {
   /**
    * The margin to use.
    * Labels and axes fall within these margins.
+   * @default { top: 40, bottom: 40, left: 50, right: 30 }
    */
   margin?: Margin;
   /**
