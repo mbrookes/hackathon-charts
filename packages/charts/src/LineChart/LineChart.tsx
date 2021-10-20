@@ -31,10 +31,6 @@ type Scale = 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
 
 export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   /**
-   * The keys to use when stacking the data.
-   */
-  keys?: string[];
-  /**
    * The content of the component.
    */
   children: React.ReactNode;
@@ -44,6 +40,7 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   data: Record[] | Record[][];
   /**
    * The fill color to use for the area.
+   * @default 'none'
    */
   fill?: string;
   /**
@@ -52,6 +49,7 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   height?: number;
   /**
    * If true, the markers will be highlighted when the mouse is over them.
+   * @default false
    */
   highlightMarkers?: boolean;
   /**
@@ -60,8 +58,13 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   id?: string;
   /**
    * Invert the line and fill colors of the point markers.
+   * @default false
    */
   invertMarkers?: boolean;
+  /**
+   * The keys to use when stacking the data.
+   */
+  keys?: string[];
   /**
    * The label to display above the chart.
    */
@@ -84,10 +87,12 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   /**
    * The shape of the markers.
    * If auto, the shape will be based on the data series.
+   * @default 'circle'
    */
   markerShape?: MarkerShape;
   /**
    * The size of the markers.
+   * @default 30
    */
   markerSize?: number;
   /**
@@ -97,14 +102,17 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   ratio?: string | number;
   /**
    * The maximum number of pixels per tick.
+   * @default 50
    */
   tickSpacing?: number;
   /**
    * If `true`, the plotted lines will be smoothed.
+   * @default false
    */
   smoothed?: boolean;
   /**
    * If `true`, the data will be stacked.
+   * @default false
    */
   stacked?: boolean;
   /**
@@ -117,11 +125,13 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   xValueSelector?: keyof Record | ((r: Record) => X);
   /**
    * The scale type to use for the x axis.
+   * @default 'linear'
    */
   xScaleType?: Scale;
   /**
    * Override the calculated domain of the y axis.
    * By default, the domain starts at zero. Set the value to null to calculate the true domain.
+   * @default [0]
    */
   yDomain?: [Y] | [Y, Y];
   /**
@@ -130,6 +140,7 @@ export interface LineChartProps<Record = unknown, X = unknown, Y = unknown> {
   yValueSelector?: keyof Record | ((r: Record) => Y);
   /**
    * The scale type to use for the y axis.
+   * @default 'linear'
    */
   yScaleType?: Scale;
 }
@@ -143,7 +154,6 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
   ref: React.ForwardedRef<SVGSVGElement>,
 ) {
   const {
-    keys,
     children,
     data: dataProp,
     fill = 'none',
@@ -151,6 +161,7 @@ const LineChart = React.forwardRef(function LineChart<Record = unknown, X = unkn
     height: heightProp,
     id: idProp,
     invertMarkers = false,
+    keys,
     label,
     labelColor = 'currentColor',
     labelFontSize = 18,
