@@ -3,7 +3,6 @@ import cleaner from 'rollup-plugin-cleaner';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
-import command from 'rollup-plugin-command';
 import babel from '@rollup/plugin-babel';
 import copy from 'rollup-plugin-copy';
 import pkg from './package.json';
