@@ -61,13 +61,13 @@ type LineComponent = (props: LineProps & React.RefAttributes<SVGSVGElement>) => 
 
 const Line = React.forwardRef(function Grid(props: LineProps, ref: React.Ref<SVGSVGElement>) {
   const {
-    keys,
     chartId,
     data,
     dimensions: { boundedHeight },
     highlightMarkers,
-    setSeriesMeta,
+    keys,
     markerShape: markerShapeContext,
+    setSeriesMeta,
     smoothed: smoothedContext,
     stacked,
     xKey,
