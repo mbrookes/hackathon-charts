@@ -6,6 +6,7 @@ import Popper from '@mui/material/Popper';
 import Typography from '@mui/material/Typography';
 import ChartContext from '../ChartContext';
 import useTicks from '../hooks/useTicks';
+import useThrottle from '../hooks/useThrottle';
 import { findObjects, isInRange } from '../utils';
 
 function getSymbol(shape, series = 0) {
@@ -53,9 +54,9 @@ const Tooltip = React.forwardRef(function Grid(
   ref: React.Ref<HTMLDivElement>,
 ) {
   const {
+    chartRef,
     data,
-    dimensions: { boundedHeight },
-    mousePosition,
+    dimensions: { boundedHeight, marginLeft, marginTop },
     invertMarkers,
     xKey,
     xScale,
@@ -86,11 +87,43 @@ const Tooltip = React.forwardRef(function Grid(
   // An array of x-offset values matching the data
   const xOffsets = [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending);
 
-  // Find the closest x-offset to the mouse position
-  // TODO: Currently assumes that data points are equally spaced
-  const offset = xOffsets.find((d) =>
-    isInRange(mousePosition.x, d, (xOffsets[1] - xOffsets[0]) / 2),
-  );
+  const [offset, setOffset] = React.useState();
+
+  // Use a ref to avoid rerendering on every mousemove event.
+  const mousePosition = React.useRef({
+    x: -1,
+    y: -1,
+  });
+
+  const handleMouseMove = useThrottle((event) => {
+    mousePosition.current = {
+      x: event.offsetX - marginLeft,
+      y: event.offsetY - marginTop,
+    };
+    // Find the closest x-offset to the mouse position
+    // TODO: Currently assumes that data points are equally spaced
+    setOffset(
+      xOffsets.find((d) => isInRange(mousePosition.current.x, d, (xOffsets[1] - xOffsets[0]) / 2)),
+    );
+  });
+
+  React.useEffect(() => {
+    const chart = chartRef.current;
+    const handleMouseOut = () => {
+      mousePosition.current = {
+        x: -1,
+        y: -1,
+      };
+    };
+
+    chart.addEventListener('mousemove', handleMouseMove);
+    chart.addEventListener('mouseout', handleMouseOut);
+
+    return () => {
+      chart.removeEventListener('mousemove', handleMouseMove);
+      chart.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, [chartRef, handleMouseMove]);
 
   // The data that matches the mouse position
   let highlightedData =
