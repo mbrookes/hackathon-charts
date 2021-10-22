@@ -4,19 +4,19 @@ import ChartContext from '../ChartContext';
 
 const Bar = (props) => {
   const {
-    keys,
     data = [],
     dimensions: { boundedWidth, boundedHeight },
     padding,
     setSeriesMeta,
     stacked,
+    keys,
     xKey,
     xScale,
     yKey,
     yScale,
   } = useContext(ChartContext) as any;
 
-  const { data: dataProp, fill, series, label } = props;
+  const { data: dataProp, fill, label, series } = props;
 
   const chartData = dataProp || data[series] || data;
 
