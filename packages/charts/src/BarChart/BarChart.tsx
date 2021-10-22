@@ -125,26 +125,26 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
   ref: React.Ref<SVGSVGElement>,
 ) {
   const {
-    keys,
     children,
     data: dataProp,
     fill = 'none',
     height: heightProp,
+    keys,
     label,
     labelColor = 'currentColor',
     labelFontSize = 18,
     margin: marginProp,
+    padding = 10,
     ratio: ratioProp,
-    tickSpacing = 40,
     seriesLabels = [],
     stacked = false,
+    tickSpacing = 40,
     xDomain: xDomainProp,
     xKey = 'x',
     xScaleType = 'linear',
     yDomain: yDomainProp = [0],
     yKey = 'y',
     yScaleType = 'linear',
-    padding = 10,
     ...other
   } = props;
 
@@ -214,10 +214,12 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
   return (
     <ChartContext.Provider
       value={{
-        keys,
         data,
         dimensions,
+        keys,
         seriesLabels,
+        seriesMeta,
+        setSeriesMeta,
         stacked,
         mousePosition,
         padding,
@@ -229,8 +231,6 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
         yScale,
         yScaleType,
         yTicks,
-        seriesMeta,
-        setSeriesMeta,
       }}
     >
       <svg

@@ -267,15 +267,15 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
   return (
     <ChartContext.Provider
       value={{
-        keys,
         chartId,
         data,
         dimensions,
         highlightMarkers,
         invertMarkers,
-        seriesMeta,
+        keys,
         markerShape,
         markerSize,
+        seriesMeta,
         setSeriesMeta,
         stacked,
         mousePosition,
