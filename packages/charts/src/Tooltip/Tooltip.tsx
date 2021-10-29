@@ -158,67 +158,65 @@ const Tooltip = React.forwardRef(function Grid(
   );
 
   return (
-    <React.Fragment>
-      <NoSsr>
-        {strokeElement && (
-          <Popper
-            open={strokeElement !== null}
-            placement="right-start"
-            anchorEl={strokeElement}
-            style={{ padding: '16px', pointerEvents: 'none' }}
-            ref={ref}
-          >
-            {!renderContent && (
-              <Paper style={{ padding: '16px' }}>
-                <Typography gutterBottom align="center">
-                  {label && label.value}
-                </Typography>
-                {highlightedData &&
-                  highlightedData
-                    .sort((a, b) => d3.descending(a[yKey], b[yKey]))
-                    .map((d, i) => (
-                      <Typography
-                        variant="caption"
-                        key={i}
-                        sx={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        <svg width={markerSize} height={markerSize}>
-                          <path
-                            // @ts-ignore TODO: Fix me
-                            d={d3.symbol(
-                              d3.symbols[getSymbol(d.markerShape, d.series)],
-                              markerSize,
-                            )()}
-                            fill={invertMarkers ? d.stroke : d.fill}
-                            stroke={invertMarkers ? d.fill : d.stroke}
-                            transform={`translate(${markerSize / 2}, ${markerSize / 2})`}
-                          />
-                        </svg>
-                        {d.label}
-                        {d.label ? ':' : null} {d[yKey]}
-                      </Typography>
-                    ))}
-              </Paper>
-            )}
-            {renderContent && renderContent(highlightedData)}
-          </Popper>
-        )}
-        <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
-          {offset !== undefined && (
-            <g transform={`translate(${offset}, 0)`}>
-              <line
-                ref={updateStrokeRef}
-                y2={-boundedHeight}
-                stroke={stroke}
-                strokeWidth={isLineChart ? strokeWidth : 0}
-                strokeDasharray={strokeDasharray}
-                shapeRendering="crispEdges"
-              />
-            </g>
+    <NoSsr>
+      {strokeElement && (
+        <Popper
+          open={strokeElement !== null}
+          placement="right-start"
+          anchorEl={strokeElement}
+          style={{ padding: '16px', pointerEvents: 'none' }}
+          ref={ref}
+        >
+          {!renderContent && (
+            <Paper style={{ padding: '16px' }}>
+              <Typography gutterBottom align="center">
+                {label && label.value}
+              </Typography>
+              {highlightedData &&
+                highlightedData
+                  .sort((a, b) => d3.descending(a[yKey], b[yKey]))
+                  .map((d, i) => (
+                    <Typography
+                      variant="caption"
+                      key={i}
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <svg width={markerSize} height={markerSize}>
+                        <path
+                          // @ts-ignore TODO: Fix me
+                          d={d3.symbol(
+                            d3.symbols[getSymbol(d.markerShape, d.series)],
+                            markerSize,
+                          )()}
+                          fill={invertMarkers ? d.stroke : d.fill}
+                          stroke={invertMarkers ? d.fill : d.stroke}
+                          transform={`translate(${markerSize / 2}, ${markerSize / 2})`}
+                        />
+                      </svg>
+                      {d.label}
+                      {d.label ? ':' : null} {d[yKey]}
+                    </Typography>
+                  ))}
+            </Paper>
           )}
-        </g>
-      </NoSsr>
-    </React.Fragment>
+          {renderContent && renderContent(highlightedData)}
+        </Popper>
+      )}
+      <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
+        {offset !== undefined && (
+          <g transform={`translate(${offset}, 0)`}>
+            <line
+              ref={updateStrokeRef}
+              y2={-boundedHeight}
+              stroke={stroke}
+              strokeWidth={isLineChart ? strokeWidth : 0}
+              strokeDasharray={strokeDasharray}
+              shapeRendering="crispEdges"
+            />
+          </g>
+        )}
+      </g>
+    </NoSsr>
   );
 }) as TooltipComponent;
 
