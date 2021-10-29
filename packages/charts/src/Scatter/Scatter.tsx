@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
 import useThrottle from '../hooks/useThrottle';
@@ -104,36 +104,46 @@ const Scatter = React.forwardRef(function Grid(props: ScatterProps, ref: React.R
 
   const chartData = dataProp || data[series] || data;
 
-  // Use a ref to avoid rerendering on every mousemove event.
   const [mousePosition, setMousePosition] = React.useState({
     x: -1,
     y: -1,
   });
 
-  const handleMouseMove = useThrottle((event) => {
+  const handleMouseMove = useThrottle(
+    useCallback(
+      (event) => {
+        setMousePosition({
+          x: event.offsetX - marginLeft,
+          y: event.offsetY - marginTop,
+        });
+      },
+      [marginLeft, marginTop],
+    ),
+  );
+
+  const handleMouseOut = useCallback(() => {
     setMousePosition({
-      x: event.offsetX - marginLeft,
-      y: event.offsetY - marginTop,
+      x: -1,
+      y: -1,
     });
-  });
+  }, []);
 
   React.useEffect(() => {
     const chart = chartRef.current;
-    const handleMouseOut = () => {
-      setMousePosition({
-        x: -1,
-        y: -1,
-      });
-    };
 
-    chart.addEventListener('mousemove', handleMouseMove);
-    chart.addEventListener('mouseout', handleMouseOut);
+    if (highlightMarkers) {
+      chart.addEventListener('mousemove', handleMouseMove);
+      chart.addEventListener('mouseout', handleMouseOut);
+    } else {
+      chart.removeEventListener('mousemove', handleMouseMove);
+      chart.removeEventListener('mouseout', handleMouseOut);
+    }
 
     return () => {
       chart.removeEventListener('mousemove', handleMouseMove);
       chart.removeEventListener('mouseout', handleMouseOut);
     };
-  }, [chartRef, handleMouseMove]);
+  }, [chartRef, handleMouseMove, handleMouseOut, highlightMarkers]);
 
   const highlightMarker = (x) => {
     return (
