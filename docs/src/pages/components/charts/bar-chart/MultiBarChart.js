@@ -65,8 +65,6 @@ export default function MultiLineChart() {
   return chartData ? (
     <BarChart
       data={[chartData?.morning, chartData?.afternoon, chartData?.night]}
-      highlightMarkers
-      invertMarkers
       label="Commits to the MUI repo by day of week"
       margin={{ top: 60, bottom: 70, left: 60 }}
       xScaleType="linear"
