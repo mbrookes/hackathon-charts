@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import ChartContext from '../ChartContext';
 import useTicks from '../hooks/useTicks';
 import useThrottle from '../hooks/useThrottle';
-import { findObjects, isInRange } from '../utils';
+import { findObjects } from '../utils';
 
 function getSymbol(shape, series = 0) {
   const symbolNames = 'circle cross diamond square star triangle wye'.split(/ /);
@@ -56,7 +56,7 @@ const Tooltip = React.forwardRef(function Grid(
   const {
     chartRef,
     data,
-    dimensions: { boundedHeight, marginLeft, marginTop },
+    dimensions: { boundedHeight, boundedWidth, marginLeft, marginTop },
     invertMarkers,
     xKey,
     xScale,
@@ -86,7 +86,6 @@ const Tooltip = React.forwardRef(function Grid(
 
   // An array of x-offset values matching the data
   const xOffsets = [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending);
-
   const [offset, setOffset] = React.useState();
 
   // Use a ref to avoid rerendering on every mousemove event.
@@ -101,9 +100,14 @@ const Tooltip = React.forwardRef(function Grid(
       y: event.offsetY - marginTop,
     };
     // Find the closest x-offset to the mouse position
-    // TODO: Currently assumes that data points are equally spaced
     setOffset(
-      xOffsets.find((d) => isInRange(mousePosition.current.x, d, (xOffsets[1] - xOffsets[0]) / 2)),
+      mousePosition.current.x < 0 || mousePosition.current.x > boundedWidth
+        ? undefined
+        : xOffsets.reduce((a, b) => {
+            return Math.abs(b - mousePosition.current.x) < Math.abs(a - mousePosition.current.x)
+              ? b
+              : a;
+          }),
     );
   });
 
