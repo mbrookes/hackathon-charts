@@ -2,7 +2,7 @@
 // but as a hook that clears its own timeout on unmount.
 import * as React from 'react';
 
-export default function useThrottle(func, wait = 166) {
+export default function useThrottle(func, wait = 50) {
   const timeout = React.useRef(null);
   const shouldWait = React.useRef(false);
 
