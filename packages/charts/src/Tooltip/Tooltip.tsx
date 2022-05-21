@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import * as d3 from 'd3';
 import NoSsr from '@mui/core/NoSsr';
 import Paper from '@mui/material/Paper';
@@ -85,7 +85,10 @@ const Tooltip = React.forwardRef(function Grid(
   const flatX = [].concat.apply([], data).map((d) => d[xKey]);
 
   // An array of x-offset values matching the data
-  const xOffsets = [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending);
+  const xOffsets = useMemo(() => [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending), [
+    flatX,
+    xScale,
+  ]);
   const [offset, setOffset] = React.useState();
 
   // Use a ref to avoid rerendering on every mousemove event.
