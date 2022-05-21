@@ -6,7 +6,6 @@ import useChartDimensions from '../hooks/useChartDimensions';
 import useStackedArrays from '../hooks/useStackedArrays';
 import useTicks from '../hooks/useTicks';
 import useScale from '../hooks/useScale';
-import useThrottle from '../hooks/useThrottle';
 import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
 interface ChartData<X, Y> {
@@ -191,29 +190,12 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
     maxTicks: 999,
   });
 
-  const [mousePosition, setMousePosition] = React.useState({
-    x: -1,
-    y: -1,
-  });
-
-  const handleMouseMove = useThrottle((event) => {
-    setMousePosition({
-      x: event.nativeEvent.offsetX - marginLeft,
-      y: event.nativeEvent.offsetY - marginTop,
-    });
-  });
-
-  const handleMouseOut = () => {
-    setMousePosition({
-      x: -1,
-      y: -1,
-    });
-  };
   const chartHeight = heightProp || width * ratio;
 
   return (
     <ChartContext.Provider
       value={{
+        chartRef,
         data,
         dimensions,
         keys,
@@ -221,7 +203,6 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
         seriesMeta,
         setSeriesMeta,
         stacked,
-        mousePosition,
         padding,
         xKey,
         xScale,
@@ -237,8 +218,6 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
         viewBox={`0 0 ${width} ${height}`}
         ref={handleRef}
         {...other}
-        onMouseMove={handleMouseMove}
-        onMouseOut={handleMouseOut}
         style={{ width: '100%', height: chartHeight }}
       >
         <rect width={width} height={height} fill={fill} rx="4" />

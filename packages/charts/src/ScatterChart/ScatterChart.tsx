@@ -197,6 +197,7 @@ const ScatterChart = React.forwardRef(function ScatterChart<X = unknown, Y = unk
   return (
     <ChartContext.Provider
       value={{
+        chartRef,
         data,
         dimensions,
         invertMarkers,

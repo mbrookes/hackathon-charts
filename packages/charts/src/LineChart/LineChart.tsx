@@ -5,7 +5,6 @@ import ChartContext from '../ChartContext';
 import useChartDimensions from '../hooks/useChartDimensions';
 import useScale from '../hooks/useScale';
 import useStackedArrays from '../hooks/useStackedArrays';
-import useThrottle from '../hooks/useThrottle';
 import useTicks from '../hooks/useTicks';
 import { getExtent, getMaxDataSetLength, stringRatioToNumber } from '../utils';
 
@@ -243,31 +242,13 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
     maxTicks: 999,
   });
 
-  const [mousePosition, setMousePosition] = React.useState({
-    x: -1,
-    y: -1,
-  });
-
-  const handleMouseMove = useThrottle((event) => {
-    setMousePosition({
-      x: event.nativeEvent.offsetX - marginLeft,
-      y: event.nativeEvent.offsetY - marginTop,
-    });
-  });
-
-  const handleMouseOut = () => {
-    setMousePosition({
-      x: -1,
-      y: -1,
-    });
-  };
-
   const chartId = useId(idProp);
   const chartHeight = heightProp || width * ratio;
   return (
     <ChartContext.Provider
       value={{
         chartId,
+        chartRef,
         data,
         dimensions,
         highlightMarkers,
@@ -278,7 +259,6 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
         seriesMeta,
         setSeriesMeta,
         stacked,
-        mousePosition,
         smoothed,
         xKey,
         xScale,
@@ -295,8 +275,6 @@ const LineChart = React.forwardRef(function LineChart<X = unknown, Y = unknown>(
         ref={handleRef}
         id={chartId}
         {...other}
-        onMouseMove={handleMouseMove}
-        onMouseOut={handleMouseOut}
         style={{ width: '100%', height: chartHeight }}
       >
         <defs>

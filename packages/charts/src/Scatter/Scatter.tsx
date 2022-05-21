@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import * as d3 from 'd3';
 import ChartContext from '../ChartContext';
+import useThrottle from '../hooks/useThrottle';
 import { getSymbol, isInRange } from '../utils';
 
 const plot = (value, domain, size) => {
@@ -69,13 +70,13 @@ type ScatterComponent = (props: ScatterProps & React.RefAttributes<SVGSVGElement
 
 const Scatter = React.forwardRef(function Grid(props: ScatterProps, ref: React.Ref<SVGSVGElement>) {
   const {
+    chartRef,
     data,
-    dimensions: { boundedHeight },
+    dimensions: { boundedHeight, marginLeft, marginTop },
     highlightMarkers,
     invertMarkers: invertMarkersContext,
     markerShape: markerShapeContext,
     markerSize,
-    mousePosition,
     xKey: xKeyContext,
     xScale,
     yKey: yKeyContext,
@@ -102,6 +103,47 @@ const Scatter = React.forwardRef(function Grid(props: ScatterProps, ref: React.R
   } = props;
 
   const chartData = dataProp || data[series] || data;
+
+  const [mousePosition, setMousePosition] = React.useState({
+    x: -1,
+    y: -1,
+  });
+
+  const handleMouseMove = useThrottle(
+    useCallback(
+      (event) => {
+        setMousePosition({
+          x: event.offsetX - marginLeft,
+          y: event.offsetY - marginTop,
+        });
+      },
+      [marginLeft, marginTop],
+    ),
+  );
+
+  const handleMouseOut = useCallback(() => {
+    setMousePosition({
+      x: -1,
+      y: -1,
+    });
+  }, []);
+
+  React.useEffect(() => {
+    const chart = chartRef.current;
+
+    if (highlightMarkers) {
+      chart.addEventListener('mousemove', handleMouseMove);
+      chart.addEventListener('mouseout', handleMouseOut);
+    } else {
+      chart.removeEventListener('mousemove', handleMouseMove);
+      chart.removeEventListener('mouseout', handleMouseOut);
+    }
+
+    return () => {
+      chart.removeEventListener('mousemove', handleMouseMove);
+      chart.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, [chartRef, handleMouseMove, handleMouseOut, highlightMarkers]);
 
   const highlightMarker = (x) => {
     return (

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import * as d3 from 'd3';
 import NoSsr from '@mui/core/NoSsr';
 import Paper from '@mui/material/Paper';
@@ -6,7 +6,8 @@ import Popper from '@mui/material/Popper';
 import Typography from '@mui/material/Typography';
 import ChartContext from '../ChartContext';
 import useTicks from '../hooks/useTicks';
-import { findObjects, isInRange } from '../utils';
+import useThrottle from '../hooks/useThrottle';
+import { findObjects } from '../utils';
 
 function getSymbol(shape, series = 0) {
   const symbolNames = 'circle cross diamond square star triangle wye'.split(/ /);
@@ -53,9 +54,9 @@ const Tooltip = React.forwardRef(function Grid(
   ref: React.Ref<HTMLDivElement>,
 ) {
   const {
+    chartRef,
     data,
-    dimensions: { boundedHeight },
-    mousePosition,
+    dimensions: { boundedHeight, boundedWidth, marginLeft, marginTop },
     invertMarkers,
     xKey,
     xScale,
@@ -84,13 +85,52 @@ const Tooltip = React.forwardRef(function Grid(
   const flatX = [].concat.apply([], data).map((d) => d[xKey]);
 
   // An array of x-offset values matching the data
-  const xOffsets = [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending);
+  const xOffsets = useMemo(() => [...new Set(flatX.map((d) => xScale(d)))].sort(d3.ascending), [
+    flatX,
+    xScale,
+  ]);
+  const [offset, setOffset] = React.useState();
 
-  // Find the closest x-offset to the mouse position
-  // TODO: Currently assumes that data points are equally spaced
-  const offset = xOffsets.find((d) =>
-    isInRange(mousePosition.x, d, (xOffsets[1] - xOffsets[0]) / 2),
-  );
+  // Use a ref to avoid rerendering on every mousemove event.
+  const mousePosition = React.useRef({
+    x: -1,
+    y: -1,
+  });
+
+  const handleMouseMove = useThrottle((event) => {
+    mousePosition.current = {
+      x: event.offsetX - marginLeft,
+      y: event.offsetY - marginTop,
+    };
+    // Find the closest x-offset to the mouse position
+    setOffset(
+      mousePosition.current.x < 0 || mousePosition.current.x > boundedWidth
+        ? undefined
+        : xOffsets.reduce((a, b) => {
+            return Math.abs(b - mousePosition.current.x) < Math.abs(a - mousePosition.current.x)
+              ? b
+              : a;
+          }),
+    );
+  });
+
+  React.useEffect(() => {
+    const chart = chartRef.current;
+    const handleMouseOut = () => {
+      mousePosition.current = {
+        x: -1,
+        y: -1,
+      };
+    };
+
+    chart.addEventListener('mousemove', handleMouseMove);
+    chart.addEventListener('mouseout', handleMouseOut);
+
+    return () => {
+      chart.removeEventListener('mousemove', handleMouseMove);
+      chart.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, [chartRef, handleMouseMove]);
 
   // The data that matches the mouse position
   let highlightedData =
@@ -125,67 +165,65 @@ const Tooltip = React.forwardRef(function Grid(
   );
 
   return (
-    <React.Fragment>
-      <NoSsr>
-        {strokeElement && (
-          <Popper
-            open={strokeElement !== null}
-            placement="right-start"
-            anchorEl={strokeElement}
-            style={{ padding: '16px', pointerEvents: 'none' }}
-            ref={ref}
-          >
-            {!renderContent && (
-              <Paper style={{ padding: '16px' }}>
-                <Typography gutterBottom align="center">
-                  {label && label.value}
-                </Typography>
-                {highlightedData &&
-                  highlightedData
-                    .sort((a, b) => d3.descending(a[yKey], b[yKey]))
-                    .map((d, i) => (
-                      <Typography
-                        variant="caption"
-                        key={i}
-                        sx={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        <svg width={markerSize} height={markerSize}>
-                          <path
-                            // @ts-ignore TODO: Fix me
-                            d={d3.symbol(
-                              d3.symbols[getSymbol(d.markerShape, d.series)],
-                              markerSize,
-                            )()}
-                            fill={invertMarkers ? d.stroke : d.fill}
-                            stroke={invertMarkers ? d.fill : d.stroke}
-                            transform={`translate(${markerSize / 2}, ${markerSize / 2})`}
-                          />
-                        </svg>
-                        {d.label}
-                        {d.label ? ':' : null} {d[yKey]}
-                      </Typography>
-                    ))}
-              </Paper>
-            )}
-            {renderContent && renderContent(highlightedData)}
-          </Popper>
-        )}
-        <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
-          {offset !== undefined && (
-            <g transform={`translate(${offset}, 0)`}>
-              <line
-                ref={updateStrokeRef}
-                y2={-boundedHeight}
-                stroke={stroke}
-                strokeWidth={isLineChart ? strokeWidth : 0}
-                strokeDasharray={strokeDasharray}
-                shapeRendering="crispEdges"
-              />
-            </g>
+    <NoSsr>
+      {strokeElement && (
+        <Popper
+          open={strokeElement !== null}
+          placement="right-start"
+          anchorEl={strokeElement}
+          style={{ padding: '16px', pointerEvents: 'none' }}
+          ref={ref}
+        >
+          {!renderContent && (
+            <Paper style={{ padding: '16px' }}>
+              <Typography gutterBottom align="center">
+                {label && label.value}
+              </Typography>
+              {highlightedData &&
+                highlightedData
+                  .sort((a, b) => d3.descending(a[yKey], b[yKey]))
+                  .map((d, i) => (
+                    <Typography
+                      variant="caption"
+                      key={i}
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <svg width={markerSize} height={markerSize}>
+                        <path
+                          // @ts-ignore TODO: Fix me
+                          d={d3.symbol(
+                            d3.symbols[getSymbol(d.markerShape, d.series)],
+                            markerSize,
+                          )()}
+                          fill={invertMarkers ? d.stroke : d.fill}
+                          stroke={invertMarkers ? d.fill : d.stroke}
+                          transform={`translate(${markerSize / 2}, ${markerSize / 2})`}
+                        />
+                      </svg>
+                      {d.label}
+                      {d.label ? ':' : null} {d[yKey]}
+                    </Typography>
+                  ))}
+            </Paper>
           )}
-        </g>
-      </NoSsr>
-    </React.Fragment>
+          {renderContent && renderContent(highlightedData)}
+        </Popper>
+      )}
+      <g transform={`translate(0, ${boundedHeight})`} style={{ pointerEvents: 'none' }}>
+        {offset !== undefined && (
+          <g transform={`translate(${offset}, 0)`}>
+            <line
+              ref={updateStrokeRef}
+              y2={-boundedHeight}
+              stroke={stroke}
+              strokeWidth={isLineChart ? strokeWidth : 0}
+              strokeDasharray={strokeDasharray}
+              shapeRendering="crispEdges"
+            />
+          </g>
+        )}
+      </g>
+    </NoSsr>
   );
 }) as TooltipComponent;
 
