@@ -35,7 +35,6 @@ export default function BasicBarChart() {
   return (
     <BarChart
       data={chartData}
-      xScaleType="linear"
       xDomain={[0, 23]}
       label="Commits to the MUI repo by hour of day"
       tickSpacing={30}

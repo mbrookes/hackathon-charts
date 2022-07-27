@@ -50,6 +50,7 @@ const XAxis = React.forwardRef(function Grid(props: XAxisProps, ref: React.Ref<S
     dimensions: { boundedHeight, boundedWidth },
     xTicks,
   } = useContext(ChartContext) as any;
+
   const {
     disableLine = false,
     disableTicks = false,

@@ -50,6 +50,7 @@ const YAxis = React.forwardRef(function Grid(props: YAxisProps, ref: React.Ref<S
     dimensions: { boundedHeight },
     yTicks,
   } = useContext(ChartContext) as any;
+
   const {
     disableLine = false,
     disableTicks = false,

@@ -1,0 +1,57 @@
+:root {
+  --ff-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Open Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--ff-system);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 40em;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  padding: 0.75em;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 0.5em;
+  box-shadow: 0 0.25em 1em 0 rgba(0, 0, 0, 0.15);
+  animation: fade-in 0.25s ease;
+  font-size: 0.9em;
+}
+.tooltip__title {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+.tooltip__table {
+  border-collapse: collapse;
+}
+.tooltip__table td {
+  border: 1px solid;
+  padding: 0.25em;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translate(-0.5em, -0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+}

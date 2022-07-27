@@ -98,7 +98,7 @@ export interface BarChartProps<X = unknown, Y = unknown> {
    * The scale type to use for the x axis.
    * @default 'linear'
    */
-  xScaleType?: 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
+  xScaleType?: 'band' | 'linear' | 'time' | 'log' | 'point' | 'pow' | 'sqrt' | 'utc';
   /**
    * Override the calculated domain of the y axis.
    */
@@ -140,7 +140,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
     tickSpacing = 40,
     xDomain: xDomainProp,
     xKey = 'x',
-    xScaleType = 'linear',
+    xScaleType = 'band',
     yDomain: yDomainProp = [0],
     yKey = 'y',
     yScaleType = 'linear',
@@ -168,13 +168,14 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
     marginBottom: margin.bottom,
     marginLeft: margin.left,
   };
+
   const [chartRef, dimensions] = useChartDimensions(chartSettings);
   const handleRef = useForkRef(chartRef, ref);
   const [seriesMeta, setSeriesMeta] = React.useState([]);
   const { width, height, boundedWidth, boundedHeight, marginLeft, marginTop } = dimensions;
-  const xDomain = getExtent(data, (d) => d[xKey], xDomainProp);
+  const xDomain = xDomainProp || getExtent(data, (d) => d[xKey]);
   const yDomain = getExtent(data, (d) => d[yKey], yDomainProp);
-  const xRange = [padding * 4, boundedWidth - 4 * padding];
+  const xRange = [padding * 4, boundedWidth - padding * 4];
   const yRange = [0, boundedHeight];
   const maxXTicks = getMaxDataSetLength(data) - 1;
   const xScale = useScale(xScaleType, xDomain, xRange);
@@ -184,6 +185,7 @@ const BarChart = React.forwardRef(function BarChart<X = unknown, Y = unknown>(
     tickSpacing,
     maxTicks: maxXTicks,
   });
+
   const yTicks = useTicks({
     scale: yScale,
     tickSpacing,

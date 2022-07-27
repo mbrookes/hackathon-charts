@@ -2,6 +2,8 @@ import * as d3 from 'd3';
 
 function getScale(scaleType) {
   switch (scaleType) {
+    case 'band':
+      return d3.scaleBand();
     case 'log':
       return d3.scaleLog();
     case 'point':

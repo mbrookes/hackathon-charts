@@ -7,6 +7,8 @@ import Grid from '@mui/charts/Grid';
 import Tooltip from '@mui/charts/Tooltip';
 import Legend from '@mui/charts/Legend';
 
+const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 async function getData() {
   const response = await fetch(
     'https://api.github.com/repos/mui-org/material-ui/stats/punch_card',
@@ -37,21 +39,21 @@ async function getData() {
 
   return {
     morning: Object.keys(morningDataPoints).map((day) => ({
-      x: day,
+      x: days[day],
       y: morningDataPoints[day],
     })),
     afternoon: Object.keys(afternoonDataPoints).map((day) => ({
-      x: day,
+      x: days[day],
       y: afternoonDataPoints[day],
     })),
     night: Object.keys(nightDataPoints).map((day) => ({
-      x: day,
+      x: days[day],
       y: nightDataPoints[day],
     })),
   };
 }
 
-export default function MultiLineChart() {
+export default function MultiBarChart() {
   const [chartData, setChartData] = React.useState(undefined);
 
   React.useEffect(() => {
@@ -67,8 +69,9 @@ export default function MultiLineChart() {
       data={[chartData?.morning, chartData?.afternoon, chartData?.night]}
       label="Commits to the MUI repo by day of week"
       margin={{ top: 60, bottom: 70, left: 60 }}
-      xScaleType="linear"
+      xScaleType="band"
       padding={15}
+      xDomain={days}
     >
       <Grid disableX />
       <Bar series={0} label="Morning" fill="rgb(116,205,240)" />
@@ -76,7 +79,7 @@ export default function MultiLineChart() {
       <Bar series={2} label="Night" fill="rgb(234,95,95)" />
       <XAxis label="Day of week" />
       <YAxis label="Count" disableLine disableTicks />
-      <Tooltip />
+      {/* <Tooltip /> */}
       <Legend spacing={80} position="bottom" />
     </BarChart>
   ) : null;

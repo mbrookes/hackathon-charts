@@ -27,7 +27,7 @@ const Bar = (props) => {
   if (isMultiBar) {
     barWidth = Math.min(
       boundedWidth / (data.length * data[0].length) - padding / 2,
-      (4 * padding) / data.length,
+      (8 * padding) / data.length,
     );
   }
 

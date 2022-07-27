@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-// Returns the extend (min and max values) of a data set.
+// Returns the extent (min and max values) of a data set.
 // If more than one set of data (nested arrays, or objects with an accessor),
 // merge them to find extent across all sets.
 // const mydata=[{data: [1,2,3]},{data: [4,5,6]}];
@@ -13,14 +13,14 @@ import * as d3 from 'd3';
 // If a yDomain with two values is passed in, return it.
 // If a yDomain with one value is passed in, use the value as the start of the extent.
 // This is useful to allow the scale to start at zero (or some arbitrary value)
-export function getExtent(data, accessor = (d) => d, yDomain) {
-  if (yDomain && yDomain.length === 2) {
-    return yDomain;
+export function getExtent(data, accessor = (d) => d, domain) {
+  if (domain && domain.length === 2) {
+    return domain;
   }
   // eslint-disable-next-line prefer-spread
   const extent = d3.extent([].concat.apply([], data), accessor);
-  if (yDomain && yDomain.length === 1) {
-    extent[0] = yDomain[0];
+  if (domain && domain.length === 1) {
+    extent[0] = domain[0];
     return extent;
   }
   return extent;
